@@ -20,7 +20,9 @@ namespace GameProjekt.Content.Controller
         Player player;
         DragLine dragLine;
         Camera camera;
-        private MouseStateView mouse;
+        float closestDistance = float.MaxValue;
+        private int tileSize = 32;
+        Vector2 closestTile;
 
         Texture2D dragTexture;
 
@@ -43,8 +45,8 @@ namespace GameProjekt.Content.Controller
         {
             // TODO: Add your initialization logic here
             map = new Map();
-            player = new Player();
             dragLine = new DragLine();
+            player = new Player(tileSize, dragLine);
 
             base.Initialize();
         }
@@ -58,7 +60,6 @@ namespace GameProjekt.Content.Controller
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             dragTexture = Content.Load<Texture2D>("Tiles/pixel");
-            mouse = new MouseStateView(camera, GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
             Tiles.Content = Content;
@@ -116,7 +117,7 @@ namespace GameProjekt.Content.Controller
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-            }, 32);
+            }, tileSize);
 
             player.Load(Content);
         }
@@ -168,13 +169,32 @@ namespace GameProjekt.Content.Controller
             map.Draw(spriteBatch);
             player.Draw(spriteBatch);
 
-            if (player.ShootLine)
+            if (dragLine.IsConnected) 
             {
-                dragLine.DrawLine(spriteBatch, dragTexture, player.Position, new Vector2(352, 1000));
+                dragLine.DrawLine(spriteBatch, dragTexture, player.Position, closestTile);
             }
+            else if (player.ShootLine)
+            {
+                Vector2? closest = null;
+                //Denna koden kommer ifrån: http://stackoverflow.com/questions/6920238/xna-find-nearest-vector-from-player skriven av User: Cameron 
+                foreach (CollisionTiles position in map.CollisionTiles)
+                {
+                    Vector2 tilePosision = new Vector2(position.Rectangle.X + (tileSize / 2), position.Rectangle.Y + (tileSize / 2));
+                    var distance = Vector2.DistanceSquared(tilePosision, player.Position);
+                    if (!closest.HasValue || distance < closestDistance)
+                    {
+                        closest = tilePosision;
+                        closestDistance = distance;
+                        closestTile = closest.Value;
+                    }
+                }// closest.Value now contains the closest vector to the player
+
+                dragLine.DrawLine(spriteBatch, dragTexture, player.Position, closest.Value);
+            }
+
             spriteBatch.End();
 
             base.Draw(gameTime);
         }
     }
-}
+}             

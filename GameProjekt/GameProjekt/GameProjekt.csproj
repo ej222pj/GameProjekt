@@ -44,7 +44,6 @@
     <Compile Include="Content\Model\RectangleHelper.cs" />
     <Compile Include="Content\Model\Tiles.cs" />
     <Compile Include="Content\View\Camera.cs" />
-    <Compile Include="Content\View\MouseStateView.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

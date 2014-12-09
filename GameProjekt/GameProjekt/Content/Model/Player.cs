@@ -15,9 +15,12 @@ namespace GameProjekt.Content.Model
         private Vector2 position = new Vector2(352, 1536);
         private Vector2 velocity;
         private Rectangle rectangle;
+        KeyboardState oldState;
+        DragLine dragLine;
 
         private bool hasStarted = false;
         private bool shootLine = false;
+        private int tileSize;
 
         public bool ShootLine 
         {
@@ -29,6 +32,12 @@ namespace GameProjekt.Content.Model
             get { return position; }
         }
 
+        public Player(int tileSize, DragLine dragline) 
+        {
+            this.tileSize = tileSize;
+            dragLine = dragline;
+        }
+
         public void Load(ContentManager Content) 
         {
             texture = Content.Load<Texture2D>("Tiles/Player");
@@ -37,7 +46,7 @@ namespace GameProjekt.Content.Model
         public void Update(GameTime gameTime) 
         {
             position += velocity;
-            rectangle = new Rectangle((int)position.X, (int)position.Y, 32, 32);
+            rectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
 
             Input(gameTime);
 
@@ -60,15 +69,39 @@ namespace GameProjekt.Content.Model
             }
             if (Keyboard.GetState().IsKeyDown(Keys.W)) 
             {
-                position.Y -= 0.3f;
+                position.Y -= 0.4f;
                 hasStarted = true;
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) && hasStarted == true)
+            if (Keyboard.GetState().IsKeyDown(Keys.R))
             {
-                shootLine = true;
-            }                               
-        }
+                ResetGame();
+            }
+
+            //Kode for holding down space
+            KeyboardState newState = Keyboard.GetState();
+            // Is the SPACE key down?
+            if (newState.IsKeyDown(Keys.Space) && hasStarted == true)
+            {
+                // If not down last update, key has just been pressed.
+                if (!oldState.IsKeyDown(Keys.Space))
+                {
+                    shootLine = !shootLine;
+                }
+            }
+            else if (oldState.IsKeyDown(Keys.Space))
+            {
+                // Key was down last update, but not down now, so
+                // it has just been released.
+                //shootLine = false;
+            }
+            // Update saved state.
+            oldState = newState;
+            if (!shootLine) 
+            {
+                dragLine.IsConnected = false; 
+            }
+        }       
 
         public void Collision(Rectangle newRectangle) 
         {
