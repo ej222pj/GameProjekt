@@ -23,6 +23,7 @@ namespace GameProjekt.Content.Controller
         float closestDistance = float.MaxValue;
         private int tileSize = 32;
         Vector2 closestTile;
+        float distance;
 
         Texture2D dragTexture;
 
@@ -94,19 +95,19 @@ namespace GameProjekt.Content.Controller
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,2,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,2,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -142,7 +143,9 @@ namespace GameProjekt.Content.Controller
                 Exit();
 
             // TODO: Add your update logic here
-            player.Update(gameTime);
+
+
+            player.Update(gameTime, player.Rotateee(distance, closestTile, gameTime));
             foreach(CollisionTiles tile in map.CollisionTiles)
             {
                 player.Collision(tile.Rectangle);
@@ -180,7 +183,7 @@ namespace GameProjekt.Content.Controller
                 foreach (CollisionTiles position in map.CollisionTiles)
                 {
                     Vector2 tilePosision = new Vector2(position.Rectangle.X + (tileSize / 2), position.Rectangle.Y + (tileSize / 2));
-                    var distance = Vector2.DistanceSquared(tilePosision, player.Position);
+                    distance = Vector2.DistanceSquared(tilePosision, player.Position);
                     if (!closest.HasValue || distance < closestDistance)
                     {
                         closest = tilePosision;
@@ -188,7 +191,6 @@ namespace GameProjekt.Content.Controller
                         closestTile = closest.Value;
                     }
                 }// closest.Value now contains the closest vector to the player
-
                 dragLine.DrawLine(spriteBatch, dragTexture, player.Position, closest.Value);
             }
 

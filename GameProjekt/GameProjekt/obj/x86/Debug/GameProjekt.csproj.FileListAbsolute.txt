@@ -1,3 +1,8 @@
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\boll.png
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\pixel.jpg
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\Player.jpg
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\Tile1.jpg
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\Tile2.jpg
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\GameProjekt.exe
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\GameProjekt.pdb
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\MonoGame.Framework.dll
@@ -20,11 +25,5 @@ C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\D
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\SharpDX.XInput.xml
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\SharpDX.RawInput.xml
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\SharpDX.Direct3D9.xml
-C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\obj\x86\Debug\GameProjekt.csprojResolveAssemblyReference.cache
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\obj\x86\Debug\GameProjekt.exe
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\obj\x86\Debug\GameProjekt.pdb
-C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\Tile1.jpg
-C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\Tile2.jpg
-C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\Player.jpg
-C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\boll.png
-C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\pixel.jpg

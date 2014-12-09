@@ -20,7 +20,9 @@ namespace GameProjekt.Content.Model
 
         private bool hasStarted = false;
         private bool shootLine = false;
+        private bool isRotating = false;
         private int tileSize;
+        float currentAngle = 0;
 
         public bool ShootLine 
         {
@@ -43,14 +45,26 @@ namespace GameProjekt.Content.Model
             texture = Content.Load<Texture2D>("Tiles/Player");
         }
 
-        public void Update(GameTime gameTime) 
+        public void Update(GameTime gameTime, Vector2 rotate) 
         {
             position += velocity;
-            rectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
-
+            if (shootLine)
+            {
+                rectangle = new Rectangle((int)rotate.X, (int)rotate.Y, tileSize, tileSize);
+                isRotating = true;
+            }
+            else
+            {
+                rectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
+                isRotating = false;
+            }
             Input(gameTime);
 
-            if (hasStarted) 
+            if (isRotating) 
+            {
+                velocity.Y = 0f;
+            }
+            else if (hasStarted) 
             {
                 velocity.Y = -2.0f;
             }
@@ -67,7 +81,7 @@ namespace GameProjekt.Content.Model
             {
                 velocity.X = -(float)gametime.ElapsedGameTime.TotalMilliseconds / 15;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.W)) 
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && hasStarted == false) 
             {
                 position.Y -= 0.4f;
                 hasStarted = true;
@@ -134,6 +148,40 @@ namespace GameProjekt.Content.Model
             {   //Ska vinna banan
                 ResetGame();
             }
+        }
+
+        public Vector2 Rotate(float angle, float distance, Vector2 centre)
+        {
+            return new Vector2((float)(distance * Math.Cos(angle)), (float)(distance * Math.Sin(angle))) + centre;
+        }
+
+        public Vector2 Rotatee(float angle, Vector2 currentPos, Vector2 centre)
+        {
+            double distance = Math.Sqrt(Math.Pow(currentPos.X - centre.X, 2) + Math.Pow(currentPos.Y - centre.Y, 2));
+            return new Vector2((float)(distance * Math.Cos(angle)), (float)(distance * Math.Sin(angle))) + centre;
+        }
+
+        public Vector2 Rotateee(float distance, Vector2 centre, GameTime gametime)
+        {
+            //if (isRotating)
+            //{
+                //double distance = Math.Sqrt(Math.Pow(currentPos.X - centre.X, 2) + Math.Pow(currentPos.Y - centre.Y, 2));
+                double speedScale = 2f * Math.PI;
+                //var angle = (float)gametime.ElapsedGameTime.TotalMilliseconds * speedScale;
+                
+                float angleStep = 0.01f;
+                currentAngle -= angleStep;
+                //return new Vector2(centre.X + ((float)(distance * Math.Sin((float)gametime.ElapsedGameTime.TotalMilliseconds % 360 * Math.PI))),
+                //    centre.Y + ((float)(distance * Math.Cos((float)gametime.ElapsedGameTime.TotalMilliseconds % 360 * Math.PI))));
+                return new Vector2((float)(centre.X + Math.Cos(currentAngle * speedScale) * distance), (float)(centre.Y + Math.Cos(currentAngle * speedScale) * distance));
+                //float x = (float)(centre.X + Math.Cos(currentAngle * speedScale) * distance);
+                //float y = (float)(centre.Y + Math.Sin(currentAngle * speedScale) * distance);
+                //return new Vector2(0,0);
+            //}
+            //else 
+            //{
+            //    return new Vector2(0,0);
+            //}
         }
 
         public void ResetGame() 
