@@ -97,6 +97,7 @@ namespace GameProjekt.Content.Model
             }
             // Update saved state.
             oldState = newState;
+            //If line not shot. Its not connected
             if (!shootLine) 
             {
                 dragLine.IsConnected = false; 
