@@ -26,3 +26,5 @@ C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\obj\x86\Debug
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\Tile1.jpg
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\Tile2.jpg
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\Player.jpg
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\boll.png
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\pixel.jpg

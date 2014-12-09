@@ -35,14 +35,16 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Content\BorderTiles.cs" />
-    <Compile Include="Content\CollisionTiles.cs" />
+    <Compile Include="Content\Model\BorderTiles.cs" />
+    <Compile Include="Content\Model\CollisionTiles.cs" />
     <Compile Include="Content\Controller\Game1.cs" />
-    <Compile Include="Content\Map.cs" />
-    <Compile Include="Content\Player.cs" />
-    <Compile Include="Content\RectangleHelper.cs" />
-    <Compile Include="Content\Tiles.cs" />
+    <Compile Include="Content\Model\DragLine.cs" />
+    <Compile Include="Content\Model\Map.cs" />
+    <Compile Include="Content\Model\Player.cs" />
+    <Compile Include="Content\Model\RectangleHelper.cs" />
+    <Compile Include="Content\Model\Tiles.cs" />
     <Compile Include="Content\View\Camera.cs" />
+    <Compile Include="Content\View\MouseStateView.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -54,6 +56,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Tiles\boll.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Tiles\pixel.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Tiles\Player.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -65,9 +73,7 @@
     </Content>
     <Content Include="Icon.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Content\Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

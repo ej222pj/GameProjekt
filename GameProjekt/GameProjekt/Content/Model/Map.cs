@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GameProjekt.Content
+namespace GameProjekt.Content.Model
 {
     class Map
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GameProjekt.Content
+namespace GameProjekt.Content.Model
 {
     static class RectangleHelper
     {
@@ -38,5 +38,7 @@ namespace GameProjekt.Content
                 && r1.Top <= r2.Bottom - (r2.Width / 4)
                 && r1.Bottom >= r2.Top + (r2.Width / 4));
         }
+
+         
     }
 }

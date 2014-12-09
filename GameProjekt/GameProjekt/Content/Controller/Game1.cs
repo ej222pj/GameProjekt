@@ -1,7 +1,10 @@
-﻿using GameProjekt.Content.View;
+﻿using GameProjekt.Content.Model;
+using GameProjekt.Content.View;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
 
 namespace GameProjekt.Content.Controller
 {
@@ -15,14 +18,18 @@ namespace GameProjekt.Content.Controller
 
         Map map;
         Player player;
+        DragLine dragLine;
         Camera camera;
+        private MouseStateView mouse;
+
+        Texture2D dragTexture;
 
         public Game1()
             : base()
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 768;
-            graphics.PreferredBackBufferHeight = 768;
+            graphics.PreferredBackBufferHeight = 668;
             Content.RootDirectory = "Content";
         }
 
@@ -37,7 +44,7 @@ namespace GameProjekt.Content.Controller
             // TODO: Add your initialization logic here
             map = new Map();
             player = new Player();
-            
+            dragLine = new DragLine();
 
             base.Initialize();
         }
@@ -50,6 +57,8 @@ namespace GameProjekt.Content.Controller
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            dragTexture = Content.Load<Texture2D>("Tiles/pixel");
+            mouse = new MouseStateView(camera, GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
             Tiles.Content = Content;
@@ -135,15 +144,14 @@ namespace GameProjekt.Content.Controller
             player.Update(gameTime);
             foreach(CollisionTiles tile in map.CollisionTiles)
             {
-                player.Collision(tile.Rectangle, map.Width, map.Height);
+                player.Collision(tile.Rectangle);
             }
 
             foreach (BorderTiles tile in map.BorderTiles)
             {
-                player.BorderCollision(tile.Rectangle, map.Width, map.Height);
+                player.BorderCollision(tile.Rectangle);
                 camera.Update(player.Position, map.Width, map.Height);
             }
-
             base.Update(gameTime);
         }
 
@@ -153,12 +161,17 @@ namespace GameProjekt.Content.Controller
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Gray);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
             map.Draw(spriteBatch);
             player.Draw(spriteBatch);
+
+            if (player.ShootLine)
+            {
+                dragLine.DrawLine(spriteBatch, dragTexture, player.Position, new Vector2(352, 1000));
+            }
             spriteBatch.End();
 
             base.Draw(gameTime);
