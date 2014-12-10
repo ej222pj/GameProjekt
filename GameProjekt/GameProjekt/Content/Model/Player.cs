@@ -23,6 +23,7 @@ namespace GameProjekt.Content.Model
         private bool isRotating = false;
         private int tileSize;
         float currentAngle = 0;
+        float angleStep = 0.005f;
 
         public bool ShootLine 
         {
@@ -50,6 +51,7 @@ namespace GameProjekt.Content.Model
             position += velocity;
             if (shootLine)
             {
+                position = new Vector2(rotate.X, rotate.Y);
                 rectangle = new Rectangle((int)rotate.X, (int)rotate.Y, tileSize, tileSize);
                 isRotating = true;
             }
@@ -73,15 +75,15 @@ namespace GameProjekt.Content.Model
 
         private void Input(GameTime gametime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.D)) 
+            if (Keyboard.GetState().IsKeyDown(Keys.D) && !isRotating) 
             {
-                velocity.X = (float)gametime.ElapsedGameTime.TotalMilliseconds / 15;
+                velocity.X = 0;//(float)gametime.ElapsedGameTime.TotalMilliseconds / 15;
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.A))
+            else if (Keyboard.GetState().IsKeyDown(Keys.A) && !isRotating)
             {
-                velocity.X = -(float)gametime.ElapsedGameTime.TotalMilliseconds / 15;
+                velocity.X = 0; //-(float)gametime.ElapsedGameTime.TotalMilliseconds / 15;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.W) && hasStarted == false) 
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && !hasStarted) 
             {
                 position.Y -= 0.4f;
                 hasStarted = true;
@@ -120,7 +122,10 @@ namespace GameProjekt.Content.Model
 
         public void Collision(Rectangle newRectangle) 
         {
-            if (rectangle.TouchTopOf(newRectangle) || rectangle.TouchLeftOf(newRectangle) || rectangle.TouchRightOf(newRectangle) || rectangle.TouchBottomOf(newRectangle)) 
+            if (rectangle.TouchTopOf(newRectangle) 
+                || rectangle.TouchLeftOf(newRectangle) 
+                || rectangle.TouchRightOf(newRectangle) 
+                || rectangle.TouchBottomOf(newRectangle)) 
             {
                 ResetGame();    
             }
@@ -150,38 +155,19 @@ namespace GameProjekt.Content.Model
             }
         }
 
-        public Vector2 Rotate(float angle, float distance, Vector2 centre)
+        public Vector2 Rotate(Vector2 currentPos, Vector2 centre)
         {
-            return new Vector2((float)(distance * Math.Cos(angle)), (float)(distance * Math.Sin(angle))) + centre;
-        }
+            currentAngle -= angleStep;
+            float XDistance = currentPos.X - centre.X;
+            float YDistance = currentPos.Y - centre.Y;         
+            float distancee = (float)Math.Sqrt(XDistance * XDistance + YDistance * YDistance);
 
-        public Vector2 Rotatee(float angle, Vector2 currentPos, Vector2 centre)
-        {
-            double distance = Math.Sqrt(Math.Pow(currentPos.X - centre.X, 2) + Math.Pow(currentPos.Y - centre.Y, 2));
-            return new Vector2((float)(distance * Math.Cos(angle)), (float)(distance * Math.Sin(angle))) + centre;
-        }
+            float yDifference = (float)Math.Sin(currentAngle);
+            float xDifference = (float)Math.Cos(currentAngle);
+            Vector2 direction = new Vector2(xDifference, yDifference);
+            Vector2 newPosition = centre + direction * distancee;
 
-        public Vector2 Rotateee(float distance, Vector2 centre, GameTime gametime)
-        {
-            //if (isRotating)
-            //{
-                //double distance = Math.Sqrt(Math.Pow(currentPos.X - centre.X, 2) + Math.Pow(currentPos.Y - centre.Y, 2));
-                double speedScale = 2f * Math.PI;
-                //var angle = (float)gametime.ElapsedGameTime.TotalMilliseconds * speedScale;
-                
-                float angleStep = 0.01f;
-                currentAngle -= angleStep;
-                //return new Vector2(centre.X + ((float)(distance * Math.Sin((float)gametime.ElapsedGameTime.TotalMilliseconds % 360 * Math.PI))),
-                //    centre.Y + ((float)(distance * Math.Cos((float)gametime.ElapsedGameTime.TotalMilliseconds % 360 * Math.PI))));
-                return new Vector2((float)(centre.X + Math.Cos(currentAngle * speedScale) * distance), (float)(centre.Y + Math.Cos(currentAngle * speedScale) * distance));
-                //float x = (float)(centre.X + Math.Cos(currentAngle * speedScale) * distance);
-                //float y = (float)(centre.Y + Math.Sin(currentAngle * speedScale) * distance);
-                //return new Vector2(0,0);
-            //}
-            //else 
-            //{
-            //    return new Vector2(0,0);
-            //}
+            return newPosition;   
         }
 
         public void ResetGame() 

@@ -11,6 +11,7 @@ namespace GameProjekt.Content.Model
     class DragLine
     {
         private bool isConnected;
+        private Vector2 position;
 
         public bool IsConnected 
         {
@@ -18,16 +19,24 @@ namespace GameProjekt.Content.Model
             set { isConnected = value; }
         }
 
-        public void DrawLine(SpriteBatch spriteBatch, Texture2D texture, Vector2 start, Vector2 end)
+        public void Update(Vector2 position)
         {
-            spriteBatch.Draw(texture, start, null, Color.White,
-                             (float)Math.Atan2(end.Y - start.Y, end.X - start.X),
+            this.position = position;
+        }
+
+        public void DrawLine(SpriteBatch spriteBatch, Texture2D texture, Vector2 end)
+        {
+            spriteBatch.Draw(texture, position, null, Color.White,
+                             (float)Math.Atan2(end.Y - position.Y, end.X - position.X),
                              new Vector2(0f, (float)texture.Height / 2),
-                             new Vector2(Vector2.Distance(start, end), 1.0f),
+                             new Vector2(Vector2.Distance(position, end), 1.0f),
                              SpriteEffects.None, 0f);
+
             IsConnected = true;
         }
 
 
+
+        
     }
 }
