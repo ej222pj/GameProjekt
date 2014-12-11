@@ -145,7 +145,7 @@ namespace GameProjekt.Content.Controller
             // TODO: Add your update logic here
 
 
-            player.Update(gameTime, player.Rotate(player.Position, closestTile));
+            player.Update(gameTime, player.Position, closestTile);
             dragLine.Update(player.Position);
             foreach(CollisionTiles tile in map.CollisionTiles)
             {

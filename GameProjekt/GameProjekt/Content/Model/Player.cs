@@ -21,9 +21,11 @@ namespace GameProjekt.Content.Model
         private bool hasStarted = false;
         private bool shootLine = false;
         private bool isRotating = false;
+        private bool rotationDirection = false;
         private int tileSize;
-        float currentAngle = 0;
-        float angleStep = 0.005f;
+        private float currentAngle = 0;
+        private float angleStep = 0.105f;
+        private float playerAngle = 0;
 
         public bool ShootLine 
         {
@@ -46,11 +48,13 @@ namespace GameProjekt.Content.Model
             texture = Content.Load<Texture2D>("Tiles/Player");
         }
 
-        public void Update(GameTime gameTime, Vector2 rotate) 
+        public void Update(GameTime gameTime, Vector2 playerPosition, Vector2 center) 
         {
             position += velocity;
             if (shootLine)
             {
+                Vector2 rotate = Rotate(playerPosition, center);
+                
                 position = new Vector2(rotate.X, rotate.Y);
                 rectangle = new Rectangle((int)rotate.X, (int)rotate.Y, tileSize, tileSize);
                 isRotating = true;
@@ -60,7 +64,7 @@ namespace GameProjekt.Content.Model
                 rectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
                 isRotating = false;
             }
-            Input(gameTime);
+            Input(gameTime, playerPosition, center);
 
             if (isRotating) 
             {
@@ -73,7 +77,7 @@ namespace GameProjekt.Content.Model
            
         }
 
-        private void Input(GameTime gametime)
+        private void Input(GameTime gametime, Vector2 playerPosition, Vector2 center)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.D) && !isRotating) 
             {
@@ -102,6 +106,15 @@ namespace GameProjekt.Content.Model
                 // If not down last update, key has just been pressed.
                 if (!oldState.IsKeyDown(Keys.Space))
                 {
+                    if (center.X < playerPosition.X)
+                    {
+                        rotationDirection = true;
+                    }
+                    else if (center.X > playerPosition.X)
+                    {
+                        rotationDirection = false;
+                    }
+
                     shootLine = !shootLine;
                 }
             }
@@ -157,7 +170,17 @@ namespace GameProjekt.Content.Model
 
         public Vector2 Rotate(Vector2 currentPos, Vector2 centre)
         {
-            currentAngle -= angleStep;
+            if(rotationDirection)
+            {
+                currentAngle -= angleStep;
+                playerAngle -= angleStep;
+            }
+            else
+            {
+                currentAngle += angleStep;
+                playerAngle += angleStep;
+            }
+
             float XDistance = currentPos.X - centre.X;
             float YDistance = currentPos.Y - centre.Y;         
             float distancee = (float)Math.Sqrt(XDistance * XDistance + YDistance * YDistance);
@@ -166,7 +189,7 @@ namespace GameProjekt.Content.Model
             float xDifference = (float)Math.Cos(currentAngle);
             Vector2 direction = new Vector2(xDifference, yDifference);
             Vector2 newPosition = centre + direction * distancee;
-
+            Console.WriteLine(currentPos);
             return newPosition;   
         }
 
@@ -181,7 +204,13 @@ namespace GameProjekt.Content.Model
 
         public void Draw(SpriteBatch spriteBatch) 
         {
-            spriteBatch.Draw(texture, rectangle, Color.White);
+
+            Color color = new Color(0, 0, 0, 0);
+
+            Vector2 origin = new Vector2(texture.Bounds.Width / 2, texture.Bounds.Height / 2);
+            //spriteBatch.Draw(texture, rectangle, Color.White);
+            spriteBatch.Draw(texture, rectangle, new Rectangle(0, 0, texture.Width, texture.Height), Color.White, playerAngle, origin, SpriteEffects.None, 0);
+            //spriteBatch.Draw(smokeTexture, camera.scaleParticle(position.X, position.Y, smokeSize), new Rectangle(0, 0, smokeTexture.Bounds.Width, smokeTexture.Bounds.Height), color, rotation, origin, SpriteEffects.None, 0);
         }
 
         
