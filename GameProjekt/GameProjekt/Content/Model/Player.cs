@@ -83,17 +83,15 @@ namespace GameProjekt.Content.Model
             }
             else if (hasStarted && beforeFirstRotation)
             {
-                if (center.X < position.X)
-                {
-                    velocity = tangent2;
-                }
-                else if (center.X > position.X)
-                {
+                //if (center.X < position.X)
+                //{
+                //    velocity = tangent2;
+                //}
+                //else if (center.X > position.X)
+                //{
                     velocity = tangent1;
-                }
-                 
+                //}
             }
-           
         }
 
         private void Input(GameTime gametime, Vector2 playerPosition, Vector2 center)
