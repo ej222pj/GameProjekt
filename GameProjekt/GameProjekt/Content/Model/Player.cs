@@ -12,13 +12,14 @@ namespace GameProjekt.Content.Model
     class Player
     {
         private Texture2D texture;
-        private Vector2 position = new Vector2(352, 1536);
+        private Vector2 position;
         private Vector2 velocity;
         Vector2 rotatePosition;
         Vector2 direction;
         private Rectangle rectangle;
         KeyboardState oldState;
         DragLine dragLine;
+        Map map;
 
         private bool hasStarted = false;
         private bool playerShootLine = false;
@@ -47,28 +48,22 @@ namespace GameProjekt.Content.Model
             dragLine = dragline;
         }
 
-        public void Load(ContentManager Content) 
+        public void Load(ContentManager Content, Map map) 
         {
             texture = Content.Load<Texture2D>("Tiles/Player");
+            this.map = map;
+
+            position = new Vector2(map.Width / 2, map.Height - tileSize * 2);
         }
 
         public void Update(GameTime gameTime, Vector2 center) 
         {
-            
             if (isRotating)
             {
                 rotatePosition = new Vector2(position.X, position.Y);
                 Vector2 rotationVector = ReleaseRotation(center, rotatePosition);
-                if (rotationDirection)
-                {
-                    velocity = rotationVector;
-                }
-                else
-                {
-                    velocity = rotationVector * -1;
-                }
+                velocity = rotationVector;
                 
-
                 rectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
                 isRotating = false;
             }
@@ -99,7 +94,7 @@ namespace GameProjekt.Content.Model
         {
             if (Keyboard.GetState().IsKeyDown(Keys.W) && !hasStarted) 
             {
-                position.Y -= 0.4f;
+                position.Y -= 0.8f;
                 hasStarted = true;
             }
 
@@ -164,7 +159,6 @@ namespace GameProjekt.Content.Model
             direction = new Vector2(xDifference, yDifference);
             
             Vector2 newPosition = centre + direction * distanceBetweenPlayerAndRoatateCenter;
-            Console.WriteLine();
             return newPosition;
         }
 
@@ -216,7 +210,7 @@ namespace GameProjekt.Content.Model
 
         public void ResetGame() 
         {
-            position = new Vector2(352, 1536);
+            position = new Vector2(map.Width / 2, map.Height - tileSize * 2);
             rotatePosition = position;
             velocity.Y = 0.0f;
             velocity.X = 0.0f;
@@ -234,8 +228,6 @@ namespace GameProjekt.Content.Model
             Vector2 origin = new Vector2(texture.Bounds.Width / 2, texture.Bounds.Height / 2);
             Rectangle size = new Rectangle(0, 0, texture.Width, texture.Height);
             spriteBatch.Draw(texture, rectangle, size, Color.White, currentAngle, origin, SpriteEffects.None, 0);
-       }
-
-        
+       }        
     }
 }

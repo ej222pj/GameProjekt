@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -11,6 +12,7 @@ namespace GameProjekt.Content.Model
     {
         private List<CollisionTiles> collisionTiles = new List<CollisionTiles>();
         private List<BorderTiles> borderTiles = new List<BorderTiles>();
+        List<string> lines = new List<string>();
 
         public List<CollisionTiles> CollisionTiles 
         {
@@ -31,26 +33,119 @@ namespace GameProjekt.Content.Model
         {
             get { return height; }
         }
+        
+        //public void Generate(int[,] map, int size) 
+        //{
+        //    for (int x = 0; x < map.GetLength(1); x++)
+        //        for (int y = 0; y < map.GetLength(0); y++)
+        //        {
+        //            int number = map[y, x];
 
-        public void Generate(int[,] map, int size) 
+        //            if (number == 1)
+        //            {
+        //                borderTiles.Add(new BorderTiles(number, new Rectangle(x * size, y * size, size, size)));
+        //            }
+        //            if (number == 2)
+        //            {
+        //                collisionTiles.Add(new CollisionTiles(number, new Rectangle(x * size, y * size, size, size)));
+        //            }
+        //            width = (x + 1) * size;
+        //            height = (y + 1) * size;
+        //        }
+        //}
+        public void Generate(int size, string mapFilePath)
         {
-            for (int x = 0; x < map.GetLength(1); x++)
-                for (int y = 0; y < map.GetLength(0); y++)
-                {
-                    int number = map[y, x];
+            StreamReader reader;
+            reader = new StreamReader(mapFilePath);
+            int[,] data = null;
 
-                    if (number == 1)
+            if (File.Exists(mapFilePath))
+            {
+                Dictionary<string, int> counts = GetRowAndColumnCounts(mapFilePath);
+
+                int rowCount = counts["row_count"];
+                int columnCount = counts["column_count"];
+
+                data = new int[rowCount, columnCount];
+
+                using (StreamReader sr = File.OpenText(mapFilePath))
+                {
+                    string s = "";
+                    string[] split = null;
+
+                    for (int i = 0; (s = sr.ReadLine()) != null; i++)
                     {
-                        borderTiles.Add(new BorderTiles(number, new Rectangle(x * size, y * size, size, size)));
+                        split = s.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        for (int j = 0; j < columnCount; j++)
+                        {
+                            data[i, j] = int.Parse(split[j]);
+                            //int number = data[j, i];
+                            if (data[i, j] == 1)
+                            {
+                                borderTiles.Add(new BorderTiles(1, new Rectangle(j * size, i * size, size, size)));
+                            }
+                            if (data[i, j] == 2)
+                            {
+                                collisionTiles.Add(new CollisionTiles(2, new Rectangle(j * size, i * size, size, size)));
+                            }
+                            width = (j + 1) * size;
+                            height = (i + 1) * size;
+                        }
                     }
-                    if (number == 2)
-                    {
-                        collisionTiles.Add(new CollisionTiles(number, new Rectangle(x * size, y * size, size, size)));
-                    }
-                    width = (x + 1) * size;
-                    height = (y + 1) * size;
                 }
+            }
+            else
+            {
+                //throw new FileDoesNotExistException("Input file does not exist");
+            }
         }
+
+        private Dictionary<string, int> GetRowAndColumnCounts(string inputFilePath)
+        {
+            int rowCount = 0;
+            int columnCount = 0;
+
+            if (File.Exists(inputFilePath))
+            {
+                using (StreamReader sr = File.OpenText(inputFilePath))
+                {
+                    string[] split = null;
+                    int lineCount = 0;
+
+                    for (string s = sr.ReadLine(); s != null; s = sr.ReadLine())
+                    {
+                        split = s.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        if (columnCount == 0)
+                        {
+                            columnCount = split.Length;
+                        }
+
+                        lineCount++;
+                    }
+
+                    rowCount = lineCount;
+                }
+
+                if (rowCount == 0 || columnCount == 0)
+                {
+                    //throw new FileEmptyException("No input data");
+                }
+            }
+            else
+            {
+                //throw new FileDoesNotExistException("Input file does not exist");
+            }
+
+            Dictionary<string, int> counts = new Dictionary<string, int>();
+
+            counts.Add("row_count", rowCount);
+            counts.Add("column_count", columnCount);
+
+            return counts;
+        }
+
         public void Draw(SpriteBatch spriteBatch) 
         {
             foreach (CollisionTiles tile in collisionTiles) 

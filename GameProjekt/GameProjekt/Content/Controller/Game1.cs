@@ -13,9 +13,18 @@ namespace GameProjekt.Content.Controller
     /// </summary>
     public class Game1 : Game
     {
+        enum GameState
+        {
+            MainMenu,
+            Options,
+            Playing,
+        }
+        GameState CurrentGameState = GameState.MainMenu;
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        Button btnPlay;
         Map map;
         Player player;
         DragLine dragLine;
@@ -23,8 +32,8 @@ namespace GameProjekt.Content.Controller
         float closestDistance = float.MaxValue;
         private int tileSize = 32;
         Vector2 closestTile;
-        Texture2D testTexture;
         float distance;
+        string mapFilePath = "./Content/Maps/Map1.txt";
 
         Texture2D dragTexture;
 
@@ -34,6 +43,7 @@ namespace GameProjekt.Content.Controller
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 768;
             graphics.PreferredBackBufferHeight = 668;
+            IsMouseVisible = true;
             Content.RootDirectory = "Content";
         }
 
@@ -61,68 +71,21 @@ namespace GameProjekt.Content.Controller
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            btnPlay = new Button(Content.Load<Texture2D>("Tiles/Tile2"), graphics.GraphicsDevice);
+            btnPlay.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2));
+
             dragTexture = Content.Load<Texture2D>("Tiles/pixel");
-            testTexture = Content.Load<Texture2D>("Tiles/Tile2");
 
             // TODO: use this.Content to load your game content here
             Tiles.Content = Content;
 
             camera = new Camera(GraphicsDevice.Viewport);
 
-            map.Generate(new int[,]{
-            {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-            }, tileSize);
+            map.Generate(tileSize, mapFilePath);
 
-            player.Load(Content);
+            
+
+            player.Load(Content, map);
         }
 
         /// <summary>
@@ -144,21 +107,33 @@ namespace GameProjekt.Content.Controller
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            MouseState mouse = Mouse.GetState();
+
             // TODO: Add your update logic here
-
-
-            player.Update(gameTime, closestTile);
-            dragLine.Update(player.Position);
-            foreach(CollisionTiles tile in map.CollisionTiles)
+            switch (CurrentGameState) 
             {
-                player.Collision(tile.Rectangle);
+                case GameState.MainMenu:
+                    if (btnPlay.isClicked == true) CurrentGameState = GameState.Playing;
+                    btnPlay.Update(mouse);
+                    break;
+
+                case GameState.Playing:
+                    player.Update(gameTime, closestTile);
+                    dragLine.Update(player.Position);
+                    foreach(CollisionTiles tile in map.CollisionTiles)
+                    {
+                        player.Collision(tile.Rectangle);
+                    }
+
+                    foreach (BorderTiles tile in map.BorderTiles)
+                    {
+                        player.BorderCollision(tile.Rectangle);
+                        camera.Update(player.Position, map.Width, map.Height);
+                    }
+                    break;
             }
 
-            foreach (BorderTiles tile in map.BorderTiles)
-            {
-                player.BorderCollision(tile.Rectangle);
-                camera.Update(player.Position, map.Width, map.Height);
-            }
+            
             base.Update(gameTime);
         }
 
@@ -170,36 +145,47 @@ namespace GameProjekt.Content.Controller
         {
             GraphicsDevice.Clear(Color.Gray);
             // TODO: Add your drawing code here
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
             
-            map.Draw(spriteBatch);
-            player.Draw(spriteBatch);
 
-            if (dragLine.IsConnected) 
+            switch (CurrentGameState)
             {
-                dragLine.DrawLine(spriteBatch, dragTexture, closestTile);
-            }
-            else if (player.ShootLine)
-            {
-                Vector2? closest = null;
-                //Denna koden kommer ifrån: http://stackoverflow.com/questions/6920238/xna-find-nearest-vector-from-player skriven av User: Cameron 
-                foreach (CollisionTiles position in map.CollisionTiles)
-                {
-                    Vector2 tilePosision = new Vector2(position.Rectangle.X + (tileSize / 2), position.Rectangle.Y + (tileSize / 2));
-                    //distance = Vector2.DistanceSquared(tilePosision, player.Position);
-                    distance = (float)Math.Sqrt(Math.Pow(player.Position.X - tilePosision.X, 2) + Math.Pow(player.Position.Y - tilePosision.Y, 2));
-                    if (!closest.HasValue || distance < closestDistance)
+                case GameState.MainMenu:
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(Content.Load<Texture2D>("Tiles/Tile1"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+                    btnPlay.Draw(spriteBatch);
+                    spriteBatch.End();
+                    break;
+
+                case GameState.Playing:
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
+                    map.Draw(spriteBatch);
+                    player.Draw(spriteBatch);
+
+                    if (dragLine.IsConnected) 
                     {
-                        closest = tilePosision;
-                        closestDistance = distance;
-                        closestTile = closest.Value;
+                        dragLine.DrawLine(spriteBatch, dragTexture, closestTile);
                     }
-                }// closest.Value now contains the closest vector to the player
-                dragLine.DrawLine(spriteBatch, dragTexture, closest.Value);
-            }               
-
-            spriteBatch.End();
-
+                    else if (player.ShootLine)
+                    {
+                        Vector2? closest = null;
+                        //Denna koden kommer ifrån: http://stackoverflow.com/questions/6920238/xna-find-nearest-vector-from-player skriven av User: Cameron 
+                        foreach (CollisionTiles position in map.CollisionTiles)
+                        {
+                            Vector2 tilePosision = new Vector2(position.Rectangle.X + (tileSize / 2), position.Rectangle.Y + (tileSize / 2));
+                            //distance = Vector2.DistanceSquared(tilePosision, player.Position);
+                            distance = (float)Math.Sqrt(Math.Pow(player.Position.X - tilePosision.X, 2) + Math.Pow(player.Position.Y - tilePosision.Y, 2));
+                            if (!closest.HasValue || distance < closestDistance)
+                            {
+                                closest = tilePosision;
+                                closestDistance = distance;
+                                closestTile = closest.Value;
+                            }
+                        }// closest.Value now contains the closest vector to the player
+                        dragLine.DrawLine(spriteBatch, dragTexture, closest.Value);
+                    }
+                    spriteBatch.End();
+                    break;
+            }
             base.Draw(gameTime);
         }
     }

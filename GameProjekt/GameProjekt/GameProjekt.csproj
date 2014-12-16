@@ -43,6 +43,7 @@
     <Compile Include="Content\Model\Player.cs" />
     <Compile Include="Content\Model\RectangleHelper.cs" />
     <Compile Include="Content\Model\Tiles.cs" />
+    <Compile Include="Content\View\Button.cs" />
     <Compile Include="Content\View\Camera.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -55,6 +56,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Maps\Map1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Tiles\boll.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
