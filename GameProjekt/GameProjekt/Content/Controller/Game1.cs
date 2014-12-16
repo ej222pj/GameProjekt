@@ -18,6 +18,7 @@ namespace GameProjekt.Content.Controller
             MainMenu,
             Options,
             Playing,
+            QuitPause,
         }
         GameState CurrentGameState = GameState.MainMenu;
 
@@ -25,6 +26,8 @@ namespace GameProjekt.Content.Controller
         SpriteBatch spriteBatch;
 
         Button btnPlay;
+        Button btnQuit;
+
         Map map;
         Player player;
         DragLine dragLine;
@@ -33,6 +36,7 @@ namespace GameProjekt.Content.Controller
         private int tileSize = 32;
         Vector2 closestTile;
         float distance;
+        bool paused = false;
         string mapFilePath = "./Content/Maps/Map1.txt";
 
         Texture2D dragTexture;
@@ -74,6 +78,9 @@ namespace GameProjekt.Content.Controller
             btnPlay = new Button(Content.Load<Texture2D>("Tiles/Tile2"), graphics.GraphicsDevice);
             btnPlay.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2));
 
+            btnQuit = new Button(Content.Load<Texture2D>("Tiles/Tile2"), graphics.GraphicsDevice);
+            btnQuit.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2 + 300));
+
             dragTexture = Content.Load<Texture2D>("Tiles/pixel");
 
             // TODO: use this.Content to load your game content here
@@ -82,8 +89,6 @@ namespace GameProjekt.Content.Controller
             camera = new Camera(GraphicsDevice.Viewport);
 
             map.Generate(tileSize, mapFilePath);
-
-            
 
             player.Load(Content, map);
         }
@@ -104,36 +109,52 @@ namespace GameProjekt.Content.Controller
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape) || Keyboard.GetState().IsKeyDown(Keys.Q))
+                CurrentGameState = GameState.QuitPause;
+                
 
             MouseState mouse = Mouse.GetState();
 
             // TODO: Add your update logic here
-            switch (CurrentGameState) 
-            {
-                case GameState.MainMenu:
-                    if (btnPlay.isClicked == true) CurrentGameState = GameState.Playing;
-                    btnPlay.Update(mouse);
-                    break;
+                switch (CurrentGameState)
+                {
+                    case GameState.MainMenu:
+                        if (btnPlay.isClicked == true)
+                        {
+                            CurrentGameState = GameState.Playing;
+                        }
+                        btnPlay.Update(mouse);
+                        break;
 
-                case GameState.Playing:
-                    player.Update(gameTime, closestTile);
-                    dragLine.Update(player.Position);
-                    foreach(CollisionTiles tile in map.CollisionTiles)
-                    {
-                        player.Collision(tile.Rectangle);
-                    }
+                    case GameState.Playing:
+                        btnPlay.isClicked = false;
+                        player.Update(gameTime, closestTile);
+                        dragLine.Update(player.Position);
+                        foreach (CollisionTiles tile in map.CollisionTiles)
+                        {
+                            player.Collision(tile.Rectangle);
+                        }
 
-                    foreach (BorderTiles tile in map.BorderTiles)
-                    {
-                        player.BorderCollision(tile.Rectangle);
-                        camera.Update(player.Position, map.Width, map.Height);
-                    }
-                    break;
-            }
+                        foreach (BorderTiles tile in map.BorderTiles)
+                        {
+                            player.BorderCollision(tile.Rectangle);
+                            camera.Update(player.Position, map.Width, map.Height);
+                        }
+                        break;
 
-            
+                    case GameState.QuitPause:
+                        if (btnQuit.isClicked == true)
+                        {
+                            Exit();
+                        }
+                        if (btnPlay.isClicked == true)
+                        {
+                            CurrentGameState = GameState.Playing;
+                        }
+                        btnPlay.Update(mouse);
+                        btnQuit.Update(mouse);
+                        break;
+            }         
             base.Update(gameTime);
         }
 
@@ -145,8 +166,6 @@ namespace GameProjekt.Content.Controller
         {
             GraphicsDevice.Clear(Color.Gray);
             // TODO: Add your drawing code here
-            
-
             switch (CurrentGameState)
             {
                 case GameState.MainMenu:
@@ -183,6 +202,14 @@ namespace GameProjekt.Content.Controller
                         }// closest.Value now contains the closest vector to the player
                         dragLine.DrawLine(spriteBatch, dragTexture, closest.Value);
                     }
+                    spriteBatch.End();
+                    break;
+
+                case GameState.QuitPause:
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(Content.Load<Texture2D>("Tiles/Player"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+                    btnPlay.Draw(spriteBatch);
+                    btnQuit.Draw(spriteBatch);
                     spriteBatch.End();
                     break;
             }

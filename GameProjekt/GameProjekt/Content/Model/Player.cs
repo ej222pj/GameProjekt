@@ -62,7 +62,16 @@ namespace GameProjekt.Content.Model
             {
                 rotatePosition = new Vector2(position.X, position.Y);
                 Vector2 rotationVector = ReleaseRotation(center, rotatePosition);
-                velocity = rotationVector;
+
+                if (rotationDirection)
+                {
+                    velocity = rotationVector;
+                }
+                else
+                {
+                    velocity = rotationVector * -1;
+                }
+                
                 
                 rectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
                 isRotating = false;
