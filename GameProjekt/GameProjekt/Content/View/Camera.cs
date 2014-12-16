@@ -25,7 +25,7 @@ namespace GameProjekt.Content.View
 
         public void Update(Vector2 position, int xOffset, int yOffset)
         {
-            if (position.X < viewport.Width / 2)
+            /*if (position.X < viewport.Width / 2)
             {
                 center.X = viewport.Width / 2;
             }
@@ -36,7 +36,8 @@ namespace GameProjekt.Content.View
             else 
             {
                 center.X = position.X;
-            }
+            }     */
+            center.X = viewport.Width / 2;
 
             if (position.Y < viewport.Height / 2)
             {
@@ -51,7 +52,7 @@ namespace GameProjekt.Content.View
                 center.Y = position.Y;
             }
 
-            transform = Matrix.CreateTranslation(new Vector3(-center.X + (viewport.Width / 2), -center.Y + (viewport.Height / 2), 0));
+            transform = Matrix.CreateTranslation(new Vector3(0, -center.Y + (viewport.Height / 2), 0));
         }
     }
 }

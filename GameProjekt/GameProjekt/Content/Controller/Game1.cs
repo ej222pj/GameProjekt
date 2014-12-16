@@ -23,6 +23,7 @@ namespace GameProjekt.Content.Controller
         float closestDistance = float.MaxValue;
         private int tileSize = 32;
         Vector2 closestTile;
+        Texture2D testTexture;
         float distance;
 
         Texture2D dragTexture;
@@ -61,6 +62,7 @@ namespace GameProjekt.Content.Controller
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             dragTexture = Content.Load<Texture2D>("Tiles/pixel");
+            testTexture = Content.Load<Texture2D>("Tiles/Tile2");
 
             // TODO: use this.Content to load your game content here
             Tiles.Content = Content;
@@ -167,9 +169,12 @@ namespace GameProjekt.Content.Controller
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Gray);
-
+            spriteBatch.Begin();
+            spriteBatch.Draw(testTexture, new Rectangle(0, 0, 100, 100), Color.White);
+            spriteBatch.End();
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
+            
             map.Draw(spriteBatch);
             player.Draw(spriteBatch);
 
@@ -194,7 +199,7 @@ namespace GameProjekt.Content.Controller
                     }
                 }// closest.Value now contains the closest vector to the player
                 dragLine.DrawLine(spriteBatch, dragTexture, closest.Value);
-            }
+            }               
 
             spriteBatch.End();
 

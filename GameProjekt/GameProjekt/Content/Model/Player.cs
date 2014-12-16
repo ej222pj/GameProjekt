@@ -57,6 +57,8 @@ namespace GameProjekt.Content.Model
         public void Update(GameTime gameTime, Vector2 center) 
         {
             position += velocity;
+            
+
             if (shootLine)
             {
                 rotate = Rotate(position, center);
@@ -89,7 +91,7 @@ namespace GameProjekt.Content.Model
                 //}
                 //else if (center.X > position.X)
                 //{
-                    velocity = tangent1;
+                    //velocity = tangent1 * -1;
                 //}
             }
         }
@@ -132,7 +134,10 @@ namespace GameProjekt.Content.Model
                     {
                         rotationDirection = false;
                     }
-                    ReleaseRotation(center, distance, rotate);
+                    Vector2 rotationVector = ReleaseRotation(center, rotate, velocity);
+
+                    velocity = rotationVector;
+                    isRotating = false;
                     shootLine = !shootLine;
                 }
             }
@@ -151,28 +156,38 @@ namespace GameProjekt.Content.Model
             }
         }
 
-        public void ReleaseRotation(Vector2 circle_center, float circle_radius, Vector2 point)
+        public Vector2 ReleaseRotation(Vector2 circle_center, Vector2 point, Vector2 velocity)
         {
             //http://www.gamedev.net/topic/499818-tangents-to-a-circle-through-a-point/ skrivet av user: Swiftcoder
             //def find_tangents_through_point():
             //#find the direction from the point to the center of the circle
             Vector2 dir = point - circle_center;
             //#extract the length and angle
-            float len = dir.Length();
-            float angle = (float)Math.Atan2(dir.Y, dir.X);
+           // float len = dir.Length();
+            float speed = 0.9f;
+            Vector2 tangent = new Vector2(dir.Y, -dir.X);
+            tangent.Normalize();
+            return tangent * speed;
 
-            //# derive the length of the tangent using pythagoras
-            float tangent_len = (float)Math.Sqrt(len * 2 - circle_radius * 2);
-            //# and the angle using trigonometry
-            float tangent_angle = (float)Math.Asin(circle_radius / len);
+          //  float angle = (float)Math.Atan2(dir.Y, dir.X);
 
-            //# there are 2 tangents, one either side
-            float pos = angle + tangent_angle;
-            float neg = angle - tangent_angle;
+           
+          //  //# and the angle using trigonometry
+          //  float tangent_angle = (float)Math.Asin(1);
 
-            //#return the direction vector of each tanget (the starting point was passed in)
-            tangent1 = new Vector2((float)Math.Cos(pos), (float)Math.Sin(pos));
-            tangent2 = new Vector2((float)Math.Cos(neg), (float)Math.Sin(neg));
+          //  //# there are 2 tangents, one either side
+          //  float pos = angle + tangent_angle;
+          //  float neg = angle - tangent_angle;
+
+          //  Vector2 rotationVector = new Vector2((float)Math.Cos(pos), (float)Math.Sin(pos));
+          //  if (float.IsNaN(rotationVector.X) || float.IsNaN(rotationVector.Y))
+          //  {
+          //      Console.WriteLine("NAN");
+          //  }
+
+          //  //#return the direction vector of each tanget (the starting point was passed in)
+          //  return rotationVector;
+          ////  tangent2 = new Vector2((float)Math.Cos(neg), (float)Math.Sin(neg));
         }
 
         public void Collision(Rectangle newRectangle) 
@@ -231,7 +246,7 @@ namespace GameProjekt.Content.Model
             float xDifference = (float)Math.Cos(currentAngle);
             direction = new Vector2(xDifference, yDifference);
             Vector2 newPosition = centre + direction * distance;
-            Console.WriteLine(direction);
+            //Console.WriteLine(direction);
             return newPosition;   
         }
 
