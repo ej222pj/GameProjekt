@@ -33,26 +33,7 @@ namespace GameProjekt.Content.Model
         {
             get { return height; }
         }
-        
-        //public void Generate(int[,] map, int size) 
-        //{
-        //    for (int x = 0; x < map.GetLength(1); x++)
-        //        for (int y = 0; y < map.GetLength(0); y++)
-        //        {
-        //            int number = map[y, x];
 
-        //            if (number == 1)
-        //            {
-        //                borderTiles.Add(new BorderTiles(number, new Rectangle(x * size, y * size, size, size)));
-        //            }
-        //            if (number == 2)
-        //            {
-        //                collisionTiles.Add(new CollisionTiles(number, new Rectangle(x * size, y * size, size, size)));
-        //            }
-        //            width = (x + 1) * size;
-        //            height = (y + 1) * size;
-        //        }
-        //}
         public void Generate(int size, string mapFilePath)
         {
             StreamReader reader;
