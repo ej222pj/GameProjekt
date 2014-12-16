@@ -25,18 +25,6 @@ namespace GameProjekt.Content.View
 
         public void Update(Vector2 position, int xOffset, int yOffset)
         {
-            /*if (position.X < viewport.Width / 2)
-            {
-                center.X = viewport.Width / 2;
-            }
-            else if (position.X > xOffset - (viewport.Width / 2))
-            {
-                center.X = xOffset - (viewport.Width / 2);
-            }
-            else 
-            {
-                center.X = position.X;
-            }     */
             center.X = viewport.Width / 2;
 
             if (position.Y < viewport.Height / 2)

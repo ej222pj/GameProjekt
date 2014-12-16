@@ -169,9 +169,6 @@ namespace GameProjekt.Content.Controller
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Gray);
-            spriteBatch.Begin();
-            spriteBatch.Draw(testTexture, new Rectangle(0, 0, 100, 100), Color.White);
-            spriteBatch.End();
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
             

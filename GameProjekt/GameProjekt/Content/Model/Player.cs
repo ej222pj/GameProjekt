@@ -14,28 +14,26 @@ namespace GameProjekt.Content.Model
         private Texture2D texture;
         private Vector2 position = new Vector2(352, 1536);
         private Vector2 velocity;
-        Vector2 rotate;
+        Vector2 rotatePosition;
         Vector2 direction;
         private Rectangle rectangle;
         KeyboardState oldState;
         DragLine dragLine;
 
         private bool hasStarted = false;
-        private bool shootLine = false;
+        private bool playerShootLine = false;
         private bool isRotating = false;
         private bool rotationDirection = false;
         private bool beforeFirstRotation = false;
         private int tileSize;
-        private float currentAngle = 0;
+        private float currentAngle = 0f;
         private float angleStep = 0.05f;
-        private float playerAngle = 0;
-        private float distance;
-        Vector2 tangent1;
-        Vector2 tangent2;
+        private float distanceBetweenPlayerAndRoatateCenter;
+        float speed = 3.0f;
 
         public bool ShootLine 
         {
-            get { return shootLine; }
+            get { return playerShootLine; }
         }
 
         public Vector2 Position 
@@ -56,56 +54,49 @@ namespace GameProjekt.Content.Model
 
         public void Update(GameTime gameTime, Vector2 center) 
         {
-            position += velocity;
             
-
-            if (shootLine)
+            if (isRotating)
             {
-                rotate = Rotate(position, center);
+                rotatePosition = new Vector2(position.X, position.Y);
+                Vector2 rotationVector = ReleaseRotation(center, rotatePosition);
+                if (rotationDirection)
+                {
+                    velocity = rotationVector;
+                }
+                else
+                {
+                    velocity = rotationVector * -1;
+                }
                 
-                position = new Vector2(rotate.X, rotate.Y);
-                rectangle = new Rectangle((int)rotate.X, (int)rotate.Y, tileSize, tileSize);
-                isRotating = true;
-            }
-            else
-            {
-                rotate = new Vector2(position.X, position.Y);
+
                 rectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
                 isRotating = false;
             }
-            Input(gameTime, position, center);
-
-            if (isRotating) 
+            else if (!isRotating)
             {
-                velocity.Y = 0f;
+                if (playerShootLine)
+                {
+                    rotatePosition = Rotate(position, center);
+                    rectangle = new Rectangle((int)rotatePosition.X, (int)rotatePosition.Y, tileSize, tileSize);
+                    position = new Vector2(rotatePosition.X, rotatePosition.Y);
+                    isRotating = true;
+                }
+                else
+                {
+                    position += velocity;
+                    rectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
+                }
             }
-            else if (hasStarted && !beforeFirstRotation) 
+            if (hasStarted && !beforeFirstRotation)
             {
-                velocity.Y = -0.7f;
+                velocity.Y = -speed;
             }
-            else if (hasStarted && beforeFirstRotation)
-            {
-                //if (center.X < position.X)
-                //{
-                //    velocity = tangent2;
-                //}
-                //else if (center.X > position.X)
-                //{
-                    //velocity = tangent1 * -1;
-                //}
-            }
+            
+            Input(gameTime, position, center);                
         }
 
         private void Input(GameTime gametime, Vector2 playerPosition, Vector2 center)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.D) && !isRotating) 
-            {
-                velocity.X = 0;//(float)gametime.ElapsedGameTime.TotalMilliseconds / 15;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.A) && !isRotating)
-            {
-                velocity.X = 0; //-(float)gametime.ElapsedGameTime.TotalMilliseconds / 15;
-            }
             if (Keyboard.GetState().IsKeyDown(Keys.W) && !hasStarted) 
             {
                 position.Y -= 0.4f;
@@ -134,11 +125,8 @@ namespace GameProjekt.Content.Model
                     {
                         rotationDirection = false;
                     }
-                    Vector2 rotationVector = ReleaseRotation(center, rotate, velocity);
-
-                    velocity = rotationVector;
                     isRotating = false;
-                    shootLine = !shootLine;
+                    playerShootLine = !playerShootLine;
                 }
             }
             else if (oldState.IsKeyDown(Keys.Space))
@@ -150,44 +138,44 @@ namespace GameProjekt.Content.Model
             // Update saved state.
             oldState = newState;
             //If line not shot. Its not connected
-            if (!shootLine) 
+            if (!playerShootLine) 
             {
                 dragLine.IsConnected = false; 
             }
         }
 
-        public Vector2 ReleaseRotation(Vector2 circle_center, Vector2 point, Vector2 velocity)
+        public Vector2 Rotate(Vector2 currentPos, Vector2 centre)
         {
-            //http://www.gamedev.net/topic/499818-tangents-to-a-circle-through-a-point/ skrivet av user: Swiftcoder
-            //def find_tangents_through_point():
-            //#find the direction from the point to the center of the circle
-            Vector2 dir = point - circle_center;
-            //#extract the length and angle
-           // float len = dir.Length();
-            float speed = 0.9f;
+            if (rotationDirection)
+            {
+                currentAngle -= angleStep;
+            }
+            else
+            {
+                currentAngle += angleStep;
+            }
+
+            float XDistance = currentPos.X - centre.X;
+            float YDistance = currentPos.Y - centre.Y;
+            distanceBetweenPlayerAndRoatateCenter = (float)Math.Sqrt(XDistance * XDistance + YDistance * YDistance);
+
+            float xDifference = (float)Math.Cos(currentAngle);
+            float yDifference = (float)Math.Sin(currentAngle);
+            direction = new Vector2(xDifference, yDifference);
+            
+            Vector2 newPosition = centre + direction * distanceBetweenPlayerAndRoatateCenter;
+            Console.WriteLine();
+            return newPosition;
+        }
+
+        public Vector2 ReleaseRotation(Vector2 circle_center, Vector2 playerReleasePoint)
+        {
+            //Find the tangent
+            Vector2 dir = playerReleasePoint - circle_center;
             Vector2 tangent = new Vector2(dir.Y, -dir.X);
             tangent.Normalize();
+
             return tangent * speed;
-
-          //  float angle = (float)Math.Atan2(dir.Y, dir.X);
-
-           
-          //  //# and the angle using trigonometry
-          //  float tangent_angle = (float)Math.Asin(1);
-
-          //  //# there are 2 tangents, one either side
-          //  float pos = angle + tangent_angle;
-          //  float neg = angle - tangent_angle;
-
-          //  Vector2 rotationVector = new Vector2((float)Math.Cos(pos), (float)Math.Sin(pos));
-          //  if (float.IsNaN(rotationVector.X) || float.IsNaN(rotationVector.Y))
-          //  {
-          //      Console.WriteLine("NAN");
-          //  }
-
-          //  //#return the direction vector of each tanget (the starting point was passed in)
-          //  return rotationVector;
-          ////  tangent2 = new Vector2((float)Math.Cos(neg), (float)Math.Sin(neg));
         }
 
         public void Collision(Rectangle newRectangle) 
@@ -224,57 +212,28 @@ namespace GameProjekt.Content.Model
                 ResetGame();
             }
         }
-
-        public Vector2 Rotate(Vector2 currentPos, Vector2 centre)
-        {
-            if(rotationDirection)
-            {
-                currentAngle -= angleStep;
-                playerAngle -= angleStep;
-            }
-            else
-            {
-                currentAngle += angleStep;
-                playerAngle += angleStep;
-            }
-
-            float XDistance = currentPos.X - centre.X;
-            float YDistance = currentPos.Y - centre.Y;         
-            distance = (float)Math.Sqrt(XDistance * XDistance + YDistance * YDistance);
-
-            float yDifference = (float)Math.Sin(currentAngle);
-            float xDifference = (float)Math.Cos(currentAngle);
-            direction = new Vector2(xDifference, yDifference);
-            Vector2 newPosition = centre + direction * distance;
-            //Console.WriteLine(direction);
-            return newPosition;   
-        }
+        
 
         public void ResetGame() 
         {
             position = new Vector2(352, 1536);
-            rotate = position;
+            rotatePosition = position;
             velocity.Y = 0.0f;
             velocity.X = 0.0f;
             hasStarted = false;
-            shootLine = false;
+            playerShootLine = false;
             beforeFirstRotation = false;
-            playerAngle = 0;
             currentAngle = 0;
-            tangent1 = new Vector2(0,0);
-            tangent2 = new Vector2(0, 0);
             isRotating = false;
             rotationDirection = false;
             
         }
 
         public void Draw(SpriteBatch spriteBatch) 
-        {
-
-            Color color = new Color(0, 0, 0, 0);
-
+        {                                        
             Vector2 origin = new Vector2(texture.Bounds.Width / 2, texture.Bounds.Height / 2);
-            spriteBatch.Draw(texture, rectangle, new Rectangle(0, 0, texture.Width, texture.Height), Color.White, playerAngle, origin, SpriteEffects.None, 0);
+            Rectangle size = new Rectangle(0, 0, texture.Width, texture.Height);
+            spriteBatch.Draw(texture, rectangle, size, Color.White, currentAngle, origin, SpriteEffects.None, 0);
        }
 
         
