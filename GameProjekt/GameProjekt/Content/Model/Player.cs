@@ -15,7 +15,8 @@ namespace GameProjekt.Content.Model
         private Vector2 position;
         private Vector2 velocity;
         Vector2 rotatePosition;
-        Vector2 direction;
+        Vector2 rotationDirection;
+        Vector2 movmentDirection;
         private Rectangle rectangle;
         KeyboardState oldState;
         DragLine dragLine;
@@ -24,7 +25,7 @@ namespace GameProjekt.Content.Model
         private bool hasStarted = false;
         private bool playerShootLine = false;
         private bool isRotating = false;
-        private bool rotationDirection = false;
+        private bool posistionForRotationDirection = false;
         private bool beforeFirstRotation = false;
         private bool clockvise = false;
         private int tileSize;
@@ -100,19 +101,18 @@ namespace GameProjekt.Content.Model
             Input(gameTime, position, center);                
         }
 
-        public void Move()
+        public bool MovmentDirection()
         {
-
             Vector2 up = new Vector2(0, -1);
             Matrix rotMatrix = Matrix.CreateRotationZ(currentAngle);
-            Vector2 dir = Vector2.Transform(up, rotMatrix);
+            movmentDirection = Vector2.Transform(up, rotMatrix);
             if (clockvise)
             {
-                position += dir * speed;
+                return false;
             }
             else 
             {
-                position += dir * speed * -1;
+                return true;
             }
         }
 
@@ -129,12 +129,6 @@ namespace GameProjekt.Content.Model
                 ResetGame();
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-            {
-                velocity = new Vector2(0,0);
-                Move();
-            }
-
             //Kode for holding down space
             KeyboardState newState = Keyboard.GetState();
             // Is the SPACE key down?
@@ -146,11 +140,11 @@ namespace GameProjekt.Content.Model
                     beforeFirstRotation = true;
                     if (center.X < playerPosition.X)
                     {
-                        rotationDirection = true;
+                        posistionForRotationDirection = true;
                     }
                     else if (center.X > playerPosition.X)
                     {
-                        rotationDirection = false;
+                        posistionForRotationDirection = false;
                     }
                     isRotating = false;
                     playerShootLine = !playerShootLine;
@@ -173,7 +167,7 @@ namespace GameProjekt.Content.Model
 
         public Vector2 Rotate(Vector2 currentPos, Vector2 centre)
         {
-            if (rotationDirection)
+            if (posistionForRotationDirection)
             {
                 currentAngle -= angleStep;
                 clockvise = true;
@@ -190,9 +184,9 @@ namespace GameProjekt.Content.Model
 
             float xDifference = (float)Math.Cos(currentAngle);
             float yDifference = (float)Math.Sin(currentAngle);
-            direction = new Vector2(xDifference, yDifference);
+            rotationDirection = new Vector2(xDifference, yDifference);
             
-            Vector2 newPosition = centre + direction * distanceBetweenPlayerAndRoatateCenter;
+            Vector2 newPosition = centre + rotationDirection * distanceBetweenPlayerAndRoatateCenter;
             return newPosition;
         }
 
@@ -253,7 +247,7 @@ namespace GameProjekt.Content.Model
             beforeFirstRotation = false;
             currentAngle = 0;
             isRotating = false;
-            rotationDirection = false;
+            posistionForRotationDirection = false;
             
         }
 

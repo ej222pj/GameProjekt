@@ -36,7 +36,6 @@ namespace GameProjekt.Content.Controller
         private int tileSize = 32;
         Vector2 closestTile;
         float distance;
-        bool paused = false;
         string mapFilePath = "./Content/Maps/Map1.txt";
 
         Texture2D dragTexture;
