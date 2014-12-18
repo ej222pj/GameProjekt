@@ -26,6 +26,7 @@ namespace GameProjekt.Content.Model
         private bool isRotating = false;
         private bool rotationDirection = false;
         private bool beforeFirstRotation = false;
+        private bool clockvise = false;
         private int tileSize;
         private float currentAngle = 0f;
         private float angleStep = 0.05f;
@@ -63,7 +64,7 @@ namespace GameProjekt.Content.Model
                 rotatePosition = new Vector2(position.X, position.Y);
                 Vector2 rotationVector = ReleaseRotation(center, rotatePosition);
 
-                if (rotationDirection)
+                if (clockvise)
                 {
                     velocity = rotationVector;
                 }
@@ -99,6 +100,22 @@ namespace GameProjekt.Content.Model
             Input(gameTime, position, center);                
         }
 
+        public void Move()
+        {
+
+            Vector2 up = new Vector2(0, -1);
+            Matrix rotMatrix = Matrix.CreateRotationZ(currentAngle);
+            Vector2 dir = Vector2.Transform(up, rotMatrix);
+            if (clockvise)
+            {
+                position += dir * speed;
+            }
+            else 
+            {
+                position += dir * speed * -1;
+            }
+        }
+
         private void Input(GameTime gametime, Vector2 playerPosition, Vector2 center)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.W) && !hasStarted) 
@@ -110,6 +127,12 @@ namespace GameProjekt.Content.Model
             if (Keyboard.GetState().IsKeyDown(Keys.R))
             {
                 ResetGame();
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.S))
+            {
+                velocity = new Vector2(0,0);
+                Move();
             }
 
             //Kode for holding down space
@@ -153,10 +176,12 @@ namespace GameProjekt.Content.Model
             if (rotationDirection)
             {
                 currentAngle -= angleStep;
+                clockvise = true;
             }
             else
             {
                 currentAngle += angleStep;
+                clockvise = false;
             }
 
             float XDistance = currentPos.X - centre.X;
