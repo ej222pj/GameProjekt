@@ -16,7 +16,6 @@ namespace GameProjekt.Content.Model
         private Vector2 velocity;
         Vector2 rotatePosition;
         Vector2 rotationDirection;
-        Vector2 movmentDirection;
         private Rectangle rectangle;
         KeyboardState oldState;
         DragLine dragLine;
@@ -62,8 +61,7 @@ namespace GameProjekt.Content.Model
         {
             if (isRotating)
             {
-                rotatePosition = new Vector2(position.X, position.Y);
-                Vector2 rotationVector = ReleaseRotation(center, rotatePosition);
+                Vector2 rotationVector = ReleaseRotation(center, position);
 
                 if (clockvise)
                 {
@@ -73,7 +71,6 @@ namespace GameProjekt.Content.Model
                 {
                     velocity = rotationVector * -1;
                 }
-                
                 
                 rectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
                 isRotating = false;
@@ -101,19 +98,13 @@ namespace GameProjekt.Content.Model
             Input(gameTime, position, center);                
         }
 
-        public bool MovmentDirection()
+        public Vector2 MovmentDirection()
         {
             Vector2 up = new Vector2(0, -1);
             Matrix rotMatrix = Matrix.CreateRotationZ(currentAngle);
-            movmentDirection = Vector2.Transform(up, rotMatrix);
-            if (clockvise)
-            {
-                return false;
-            }
-            else 
-            {
-                return true;
-            }
+            Vector2 movmentDirection = Vector2.Transform(up, rotMatrix);
+            Console.WriteLine(movmentDirection);
+            return movmentDirection;
         }
 
         private void Input(GameTime gametime, Vector2 playerPosition, Vector2 center)
@@ -127,6 +118,11 @@ namespace GameProjekt.Content.Model
             if (Keyboard.GetState().IsKeyDown(Keys.R))
             {
                 ResetGame();
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.S))
+            {
+                MovmentDirection();
             }
 
             //Kode for holding down space
@@ -167,6 +163,13 @@ namespace GameProjekt.Content.Model
 
         public Vector2 Rotate(Vector2 currentPos, Vector2 centre)
         {
+            //float a = MathHelper.ToDegrees(currentAngle);
+            //float XDistance = currentPos.X - centre.X;
+            //float YDistance = currentPos.Y - centre.Y;
+            //distanceBetweenPlayerAndRoatateCenter = (float)Math.Sqrt(XDistance * XDistance + YDistance * YDistance);
+            //return new Vector2((float)(distanceBetweenPlayerAndRoatateCenter * Math.Cos(a)),
+            //    (float)(distanceBetweenPlayerAndRoatateCenter * Math.Sin(a))) + centre;
+
             if (posistionForRotationDirection)
             {
                 currentAngle -= angleStep;
@@ -185,7 +188,7 @@ namespace GameProjekt.Content.Model
             float xDifference = (float)Math.Cos(currentAngle);
             float yDifference = (float)Math.Sin(currentAngle);
             rotationDirection = new Vector2(xDifference, yDifference);
-            
+
             Vector2 newPosition = centre + rotationDirection * distanceBetweenPlayerAndRoatateCenter;
             return newPosition;
         }
