@@ -25,16 +25,21 @@ namespace GameProjekt.Content.Model
         private bool hasStarted = false;
         private bool playerShootLine = false;
         private bool isRotating = false;
-        private bool posistionForRotationDirectionRightSide = false;
+        private bool rightDirectionMovment = true;
         private bool beforeFirstRotation = false;
         private bool clockvise = true;
         private bool upMovement = true;
+        private bool RightOfCenter = false;
+        private bool LeftOfCenter = false;
+        private bool overCenter = false;
+        private bool underCenter = false;
         private int tileSize;
         private float currentAngle = 0f;
         private float angleStep = 0.01f;
         private float distanceBetweenPlayerAndRoatateCenter;
         float movmentAngel = 0;
-        float speed = 3.0f;
+        float speedY = 3f;
+        float speedX = 0.1f;
 
         public bool ShootLine
         {
@@ -62,56 +67,41 @@ namespace GameProjekt.Content.Model
 
         public void Update(GameTime gameTime, Vector2 center)
         {
+            position += velocity;
+
             Input(gameTime, position, center);
             if (isRotating)
             {
                 rotatePosition = Rotate(position, center);
-                Vector2 rotationVector = ReleaseRotation(center, rotatePosition);
-
-                if (clockvise)
-                {
-                    velocity = rotationVector;
-                }
-                else
-                {
-                    velocity = rotationVector * -1;
-                }
+                velocity = ReleaseRotation(center, rotatePosition);
 
                 rectangle = new Rectangle((int)rotatePosition.X, (int)rotatePosition.Y, tileSize, tileSize);
                 position = rotatePosition;
             }
             else if (!isRotating)
-            {
+            {   
+                
+                if (hasStarted && !beforeFirstRotation)
+                {
+                    velocity.Y = -speedY;
+                    velocity.X = speedX;
+
+                }
                 if (playerShootLine)
                 {
-
+                    Console.WriteLine(upMovement);
                     //rectangle = new Rectangle((int)rotatePosition.X, (int)rotatePosition.Y, tileSize, tileSize);
                     //position = new Vector2(rotatePosition.X, rotatePosition.Y);
                     //Console.WriteLine(rotatePosition);
+                    beforeFirstRotation = true;
                     isRotating = true;
                 }
                 else
                 {
-                    position += velocity;
                     rectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
-                    oldPosition.Y = position.Y - 1;
-                }
+                    oldPosition = position;
+                } 
             }
-            if (hasStarted && !beforeFirstRotation)
-            {
-                velocity.Y = -speed;
-            }
-
-
-        }
-
-        public Vector2 MovmentDirection()
-        {
-            Vector2 up = new Vector2(0, -1);
-            Matrix rotMatrix = Matrix.CreateRotationZ(currentAngle);
-            Vector2 movmentDirection = Vector2.Transform(up, rotMatrix);
-            //Console.WriteLine(movmentDirection);
-            return movmentDirection;
         }
 
         private void Input(GameTime gametime, Vector2 playerPosition, Vector2 center)
@@ -129,78 +119,66 @@ namespace GameProjekt.Content.Model
 
             if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                //velocity = new Vector2(0, 0);
-                //Vector2 C = (position + MovmentDirection());
-                //Console.WriteLine(position);
-                //position = C;
-                //MovmentDirection();
-                //Vector2 c = position;
-                //c.Normalize();
-                //Vector2 a_normalized = position;
-                //Vector2 b_normalized = oldPosition;
-                //a_normalized.Normalize();
-                //b_normalized.Normalize();
-                //float angle = (float)Math.Atan2(a_normalized.Y - b_normalized.Y, a_normalized.X - b_normalized.X);
-
-                //float XDistance = position.X - oldPosition.X;
-                //float YDistance = position.Y - oldPosition.Y;
-                //movmentAngel = (float)Math.Sqrt(XDistance * XDistance + YDistance * YDistance);
-                //movmentAngel = (float)Math.Atan2(position.Y - oldPosition.Y, position.X - oldPosition.X);
-
-                var vector2 = position - center;
-                var vector1 = new Point(1, 0); // 12 o'clock == 0°, assuming that y goes from bottom to top
-
-                double angleInRadians = Math.Atan2(vector2.Y, vector2.X) - Math.Atan2(vector1.Y, vector1.X);
-                float a = (float)angleInRadians;
-                float b = MathHelper.ToDegrees(a);
-
-                Console.WriteLine(b);
             }
-
             //Kode for holding down space
             KeyboardState newState = Keyboard.GetState();
             // Is the SPACE key down?
             if (newState.IsKeyDown(Keys.Space) && hasStarted == true)
             {
-                // If not down last update, key has just been pressed.
                 if (!oldState.IsKeyDown(Keys.Space))
                 {
-                    Console.WriteLine(oldPosition.Y);
-                    Console.WriteLine(playerPosition.Y);
-                    beforeFirstRotation = true;
-                    if (center.X < playerPosition.X)//Om user är på Vänster sida
+                    if (oldPosition.X < center.X)//Vänster om Center 
                     {
-                        posistionForRotationDirectionRightSide = false;
-                        if (oldPosition.Y < playerPosition.Y)
-                        {
-                            upMovement = false;
-                        }
-                        if (oldPosition.Y > playerPosition.Y)
-                        {
-                            upMovement = true;
-                        }
+                        LeftOfCenter = true;
+                        RightOfCenter = false;
                     }
-                    else if (center.X > playerPosition.X)//Om user är på höger sida
+                    if (oldPosition.X > center.X) //Höger om center
                     {
-                        posistionForRotationDirectionRightSide = true;
-                        if (oldPosition.Y < playerPosition.Y)
-                        {
-                            upMovement = false;
-                        }
-                        if (oldPosition.Y > playerPosition.Y)
-                        {
-                            upMovement = true;
-                        }
+                        LeftOfCenter = false;
+                        RightOfCenter = true;
+                    }
+                    if (oldPosition.Y > center.Y) //Under Center
+                    {
+                        underCenter = true;
+                        overCenter = false;
+                    }
+                    if (oldPosition.X < center.X)//Över center
+                    {
+                        underCenter = false;
+                        overCenter = true; 
+                    }
+
+                    if (oldPosition.X > playerPosition.X)//Om user är på väg åt Vänster 
+                    {
+                        rightDirectionMovment = true;
+
+                    }
+                    if (oldPosition.X < playerPosition.X)//Om user är på väg åt Höger
+                    {
+                        rightDirectionMovment = false;
+                    }
+                    //Console.WriteLine(oldPosition); 
+                    //Console.WriteLine(playerPosition);
+                    if (oldPosition.Y < playerPosition.Y)//ÅKer ner
+                    {
+                        upMovement = false;
+                    }
+                    if (oldPosition.Y > playerPosition.Y)//Åker up
+                    {
+                        upMovement = true;
                     }
                     isRotating = false;
                     playerShootLine = !playerShootLine;
-                }
+                }    
             }
-            else if (oldState.IsKeyDown(Keys.Space))
+            else if (oldState.IsKeyDown(Keys.Space) && hasStarted == true)
             {
                 // Key was down last update, but not down now, so
                 // it has just been released.
                 //shootLine = false;
+                // If not down last update, key has just been pressed.
+
+                
             }
             // Update saved state.
             oldState = newState;
@@ -213,32 +191,43 @@ namespace GameProjekt.Content.Model
 
         public Vector2 Rotate(Vector2 currentPos, Vector2 centre)
         {
-
-            if (posistionForRotationDirectionRightSide)//Om user är på höger sida
+            if (overCenter && RightOfCenter && rightDirectionMovment && !upMovement)//Om user är över till höger om centrum, rör sig höger neråt
             {
+                return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
+            }
+            if (overCenter && RightOfCenter && !rightDirectionMovment && upMovement)
+            {
+                return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep)) + centre;
+            }
+
+
                 if (upMovement)
                 {
+                    Console.WriteLine("Höger up");
                     //currentAngle += angleStep;
-                    clockvise = false;
-                    return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
+                    clockvise = true;
+                    
                 }
                 if (!upMovement)
                 {
-                    clockvise = true;
-                    return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep)) + centre;
+                    Console.WriteLine("Höger Ner");
+                    clockvise = false;
+                    return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
                 }
             }
-            if (!posistionForRotationDirectionRightSide)//Om user är på Vänster sida
+            if (!rightDirectionMovment)//Om user är på Vänster sida
             {
                 if (upMovement)
                 {
+                    Console.WriteLine("Vänster up");
                     clockvise = true;
-                    return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
+                    return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep)) + centre;
                 }
                 if (!upMovement)
                 {
+                    Console.WriteLine("Vänster ner");
                     clockvise = false;
-                    return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep)) + centre;
+                    return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
                 }
             }
             return new Vector2(0, 0);
@@ -273,7 +262,10 @@ namespace GameProjekt.Content.Model
             Vector2 tangent = new Vector2(dir.Y, -dir.X);
             tangent.Normalize();
 
-            return tangent * speed;
+            if (upMovement)
+                return (tangent * speedY);
+            else
+                return (tangent * speedY) * -1;
         }
 
         public void Collision(Rectangle newRectangle)
@@ -293,6 +285,7 @@ namespace GameProjekt.Content.Model
             {
                 rectangle.Y = newRectangle.Y - rectangle.Height;
                 velocity.Y = 0.0f;
+                //velocity.X = 0.0f;
                 hasStarted = false;
             }
             if (rectangle.TouchLeftOf(newRectangle))//Höger sidan av skärmen
@@ -321,9 +314,10 @@ namespace GameProjekt.Content.Model
             hasStarted = false;
             playerShootLine = false;
             beforeFirstRotation = false;
+            upMovement = true;
             currentAngle = 0;
             isRotating = false;
-            posistionForRotationDirectionRightSide = false;
+            rightDirectionMovment = false;
 
         }
 

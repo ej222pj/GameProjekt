@@ -118,7 +118,7 @@ namespace GameProjekt.Content.Controller
                 switch (CurrentGameState)
                 {
                     case GameState.MainMenu:
-                        if (btnPlay.isClicked == true)
+                        if (btnPlay.isClicked == true || Keyboard.GetState().IsKeyDown(Keys.Space))
                         {
                             CurrentGameState = GameState.Playing;
                         }
@@ -146,7 +146,7 @@ namespace GameProjekt.Content.Controller
                         {
                             Exit();
                         }
-                        if (btnPlay.isClicked == true)
+                        if (btnPlay.isClicked == true || Keyboard.GetState().IsKeyDown(Keys.Space))
                         {
                             CurrentGameState = GameState.Playing;
                         }
