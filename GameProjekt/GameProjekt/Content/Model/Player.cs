@@ -33,6 +33,7 @@ namespace GameProjekt.Content.Model
         private bool LeftOfCenter = false;
         private bool overCenter = false;
         private bool underCenter = false;
+        private bool isConnected = false;
         private int tileSize;
         private float currentAngle = 0f;
         private float angleStep = 0.01f;
@@ -44,6 +45,12 @@ namespace GameProjekt.Content.Model
         public bool ShootLine
         {
             get { return playerShootLine; }
+        }
+
+        public bool IsConnected
+        {
+            get { return isConnected; }
+            set { isConnected = value; }
         }
 
         public Vector2 Position
@@ -68,9 +75,8 @@ namespace GameProjekt.Content.Model
         public void Update(GameTime gameTime, Vector2 center)
         {
             position += velocity;
-
             Input(gameTime, position, center);
-            if (isRotating)
+            if (IsConnected)
             {
                 rotatePosition = Rotate(position, center);
                 velocity = ReleaseRotation(center, rotatePosition);
@@ -78,23 +84,20 @@ namespace GameProjekt.Content.Model
                 rectangle = new Rectangle((int)rotatePosition.X, (int)rotatePosition.Y, tileSize, tileSize);
                 position = rotatePosition;
             }
-            else if (!isRotating)
-            {   
-                
+            else if (!IsConnected)
+            {
                 if (hasStarted && !beforeFirstRotation)
                 {
                     velocity.Y = -speedY;
                     velocity.X = speedX;
-
                 }
                 if (playerShootLine)
                 {
-                    Console.WriteLine(upMovement);
                     //rectangle = new Rectangle((int)rotatePosition.X, (int)rotatePosition.Y, tileSize, tileSize);
                     //position = new Vector2(rotatePosition.X, rotatePosition.Y);
                     //Console.WriteLine(rotatePosition);
                     beforeFirstRotation = true;
-                    isRotating = true;
+                    //isRotating = true;
                 }
                 else
                 {
@@ -142,20 +145,21 @@ namespace GameProjekt.Content.Model
                         underCenter = true;
                         overCenter = false;
                     }
-                    if (oldPosition.X < center.X)//Över center
+                    if (oldPosition.Y < center.Y)//Över center
                     {
                         underCenter = false;
                         overCenter = true; 
                     }
+                    Console.WriteLine(center);
 
                     if (oldPosition.X > playerPosition.X)//Om user är på väg åt Vänster 
                     {
-                        rightDirectionMovment = true;
+                        rightDirectionMovment = false;
 
                     }
                     if (oldPosition.X < playerPosition.X)//Om user är på väg åt Höger
                     {
-                        rightDirectionMovment = false;
+                        rightDirectionMovment = true;
                     }
                     //Console.WriteLine(oldPosition); 
                     //Console.WriteLine(playerPosition);
@@ -167,7 +171,7 @@ namespace GameProjekt.Content.Model
                     {
                         upMovement = true;
                     }
-                    isRotating = false;
+                    IsConnected = false;
                     playerShootLine = !playerShootLine;
                 }    
             }
@@ -191,46 +195,75 @@ namespace GameProjekt.Content.Model
 
         public Vector2 Rotate(Vector2 currentPos, Vector2 centre)
         {
+            Console.WriteLine(centre);
             if (overCenter && RightOfCenter && rightDirectionMovment && !upMovement)//Om user är över till höger om centrum, rör sig höger neråt
             {
                 return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
+            }
+            if (overCenter && RightOfCenter && rightDirectionMovment && upMovement)//Om user är över till höger om centrum, rör sig höger uppåt
+            {
+                return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep)) + centre;
             }
             if (overCenter && RightOfCenter && !rightDirectionMovment && upMovement)
             {
                 return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep)) + centre;
             }
-
-
-                if (upMovement)
-                {
-                    Console.WriteLine("Höger up");
-                    //currentAngle += angleStep;
-                    clockvise = true;
-                    
-                }
-                if (!upMovement)
-                {
-                    Console.WriteLine("Höger Ner");
-                    clockvise = false;
-                    return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
-                }
-            }
-            if (!rightDirectionMovment)//Om user är på Vänster sida
+            if (overCenter && RightOfCenter && !rightDirectionMovment && !upMovement)
             {
-                if (upMovement)
-                {
-                    Console.WriteLine("Vänster up");
-                    clockvise = true;
-                    return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep)) + centre;
-                }
-                if (!upMovement)
-                {
-                    Console.WriteLine("Vänster ner");
-                    clockvise = false;
-                    return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
-                }
+                return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
             }
+            if (underCenter && RightOfCenter && rightDirectionMovment && !upMovement)
+            {
+                return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
+            }
+            if (underCenter && RightOfCenter && rightDirectionMovment && upMovement)//Under, höger, rör sig höger upp
+            {
+                 return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep)) + centre;
+            }
+            if (underCenter && RightOfCenter && !rightDirectionMovment && upMovement)//Under, höger, rör sig vänster upp
+            {
+                return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep)) + centre;
+            }
+            if (underCenter && RightOfCenter && !rightDirectionMovment && !upMovement)//Under, höger, rör sig vänster ner
+            {
+                return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
+            }
+            if (underCenter && LeftOfCenter && !rightDirectionMovment && upMovement)
+            {
+                return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
+            }
+            if (underCenter && LeftOfCenter && rightDirectionMovment && !upMovement)
+            {
+                return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep)) + centre;
+            }
+            if (underCenter && LeftOfCenter && rightDirectionMovment && upMovement)//Under, vänster, höger upp
+            {
+                return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
+            }
+            if (underCenter && LeftOfCenter && !rightDirectionMovment && !upMovement)//Under, vänster, höger ner
+            {
+                return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep)) + centre;
+            }
+            if (overCenter && LeftOfCenter && rightDirectionMovment && upMovement)
+            {
+                return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
+            }
+            if (overCenter && LeftOfCenter && !rightDirectionMovment && !upMovement)
+            {
+                return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep)) + centre;
+            }
+            if (overCenter && LeftOfCenter && !rightDirectionMovment && upMovement)
+            {
+                return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
+            }
+            if (overCenter && LeftOfCenter && rightDirectionMovment && !upMovement)
+            {
+                return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep)) + centre;
+            }
+            Console.WriteLine("Fuck");
             return new Vector2(0, 0);
+
+
 
             //if (posistionForRotationDirection)
             //{
@@ -262,10 +295,76 @@ namespace GameProjekt.Content.Model
             Vector2 tangent = new Vector2(dir.Y, -dir.X);
             tangent.Normalize();
 
-            if (upMovement)
+           // if (upMovement)
+               // return (tangent * speedY);
+            //else
+            //    return (tangent * speedY) * -1;
+
+                if (overCenter && RightOfCenter && rightDirectionMovment && !upMovement)//Om user är över till höger om centrum, rör sig höger neråt
+                {
+                    return (tangent * speedY) * -1;
+                }
+                if (overCenter && RightOfCenter && rightDirectionMovment && upMovement)//Om user är över till höger om centrum, rör sig höger uppåt
+                {
+                    return (tangent * speedY);
+                }
+                if (overCenter && RightOfCenter && !rightDirectionMovment && upMovement)
+                {
+                    return (tangent * speedY);
+                }
+                if (overCenter && RightOfCenter && !rightDirectionMovment && !upMovement)
+                {
+                    return (tangent * speedY) * -1;
+                }
+                if (underCenter && RightOfCenter && rightDirectionMovment && !upMovement)
+                {
+                    return (tangent * speedY) * -1;
+                }
+                if (underCenter && RightOfCenter && rightDirectionMovment && upMovement)//Under, höger, rör sig höger upp
+                {
+                    return (tangent * speedY);
+                }
+                if (underCenter && RightOfCenter && !rightDirectionMovment && upMovement)//Under, höger, rör sig vänster upp
+                {
+                    return (tangent * speedY);
+                }
+                if (underCenter && RightOfCenter && !rightDirectionMovment && !upMovement)//Under, höger, rör sig vänster ner
+                {
+                    return (tangent * speedY) * -1;
+                }
+                if (underCenter && LeftOfCenter && !rightDirectionMovment && upMovement)
+                {
+                    return (tangent * speedY) * -1;
+                }
+                if (underCenter && LeftOfCenter && rightDirectionMovment && !upMovement)
+                {
+                    return (tangent * speedY);
+                }
+                if (underCenter && LeftOfCenter && rightDirectionMovment && upMovement)//Under, vänster, höger upp
+                {
+                    return (tangent * speedY) * -1;
+                }
+                if (underCenter && LeftOfCenter && !rightDirectionMovment && !upMovement)//Under, vänster, höger ner
+                {
+                    return (tangent * speedY);
+                }
+                if (overCenter && LeftOfCenter && rightDirectionMovment && upMovement)
+                {
+                    return (tangent * speedY) * -1;
+                }
+                if (overCenter && LeftOfCenter && !rightDirectionMovment && !upMovement)
+                {
+                    return (tangent * speedY);
+                }
+                if (overCenter && LeftOfCenter && !rightDirectionMovment && upMovement)
+                {
+                    return (tangent * speedY) * -1;
+                }
+                if (overCenter && LeftOfCenter && rightDirectionMovment && !upMovement)
+                {
+                    return (tangent * speedY);
+                }
                 return (tangent * speedY);
-            else
-                return (tangent * speedY) * -1;
         }
 
         public void Collision(Rectangle newRectangle)
