@@ -183,7 +183,14 @@ namespace GameProjekt.Content.Controller
                     map.Draw(spriteBatch);
                     player.Draw(spriteBatch);
 
-                    Vector2? closest = null;
+                    
+                    if (dragLine.IsConnected) 
+                    {
+                        dragLine.DrawLine(spriteBatch, dragTexture, closestTile);
+                    }
+                    else if (player.ShootLine)
+                    {
+                        Vector2? closest = null;
                         //Denna koden kommer ifrån: http://stackoverflow.com/questions/6920238/xna-find-nearest-vector-from-player skriven av User: Cameron 
                         foreach (CollisionTiles position in map.CollisionTiles)
                         {
@@ -197,13 +204,7 @@ namespace GameProjekt.Content.Controller
                                 closestTile = closest.Value;
                             }
                         }// closest.Value now contains the closest vector to the player
-                    if (dragLine.IsConnected) 
-                    {
-                        dragLine.DrawLine(spriteBatch, dragTexture, closestTile);
-                    }
-                    else if (player.ShootLine)
-                    {
-                    dragLine.DrawLine(spriteBatch, dragTexture, closest.Value);
+                        dragLine.DrawLine(spriteBatch, dragTexture, closest.Value);
                     }
                     spriteBatch.End();
                     break;

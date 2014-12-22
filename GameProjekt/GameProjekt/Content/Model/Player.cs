@@ -15,7 +15,6 @@ namespace GameProjekt.Content.Model
         private Vector2 position;
         private Vector2 velocity;
         Vector2 rotatePosition;
-        Vector2 rotationDirection;
         Vector2 oldPosition;
         private Rectangle rectangle;
         KeyboardState oldState;
@@ -27,7 +26,6 @@ namespace GameProjekt.Content.Model
         private bool isRotating = false;
         private bool rightDirectionMovment = true;
         private bool beforeFirstRotation = false;
-        private bool clockvise = true;
         private bool upMovement = true;
         private bool RightOfCenter = false;
         private bool LeftOfCenter = false;
@@ -36,15 +34,17 @@ namespace GameProjekt.Content.Model
         private bool isConnected = false;
         private int tileSize;
         private float currentAngle = 0f;
-        private float angleStep = 0.01f;
-        private float distanceBetweenPlayerAndRoatateCenter;
-        float movmentAngel = 0;
-        float speedY = 3f;
+        private float angleStep = -0.1f;
+        float speedY = 8f;
         float speedX = 0.1f;
 
         public bool ShootLine
         {
             get { return playerShootLine; }
+        }
+        public bool HasStarted
+        {
+            get { return hasStarted; }
         }
 
         public bool IsConnected
@@ -76,7 +76,7 @@ namespace GameProjekt.Content.Model
         {
             position += velocity;
             Input(gameTime, position, center);
-            if (IsConnected)
+            if (isRotating)
             {
                 rotatePosition = Rotate(position, center);
                 velocity = ReleaseRotation(center, rotatePosition);
@@ -84,7 +84,7 @@ namespace GameProjekt.Content.Model
                 rectangle = new Rectangle((int)rotatePosition.X, (int)rotatePosition.Y, tileSize, tileSize);
                 position = rotatePosition;
             }
-            else if (!IsConnected)
+            else if (!isRotating)
             {
                 if (hasStarted && !beforeFirstRotation)
                 {
@@ -93,11 +93,8 @@ namespace GameProjekt.Content.Model
                 }
                 if (playerShootLine)
                 {
-                    //rectangle = new Rectangle((int)rotatePosition.X, (int)rotatePosition.Y, tileSize, tileSize);
-                    //position = new Vector2(rotatePosition.X, rotatePosition.Y);
-                    //Console.WriteLine(rotatePosition);
                     beforeFirstRotation = true;
-                    //isRotating = true;
+                    isRotating = true;
                 }
                 else
                 {
@@ -171,7 +168,7 @@ namespace GameProjekt.Content.Model
                     {
                         upMovement = true;
                     }
-                    IsConnected = false;
+                    isRotating = false;
                     playerShootLine = !playerShootLine;
                 }    
             }
