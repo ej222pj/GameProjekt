@@ -16,6 +16,7 @@ namespace GameProjekt.Content.Model
         private Vector2 velocity;
         Vector2 rotatePosition;
         Vector2 rotationDirection;
+        Vector2 oldPosition;
         private Rectangle rectangle;
         KeyboardState oldState;
         DragLine dragLine;
@@ -24,44 +25,48 @@ namespace GameProjekt.Content.Model
         private bool hasStarted = false;
         private bool playerShootLine = false;
         private bool isRotating = false;
-        private bool posistionForRotationDirection = false;
+        private bool posistionForRotationDirectionRightSide = false;
         private bool beforeFirstRotation = false;
-        private bool clockvise = false;
+        private bool clockvise = true;
+        private bool upMovement = true;
         private int tileSize;
         private float currentAngle = 0f;
-        private float angleStep = 0.05f;
+        private float angleStep = 0.01f;
         private float distanceBetweenPlayerAndRoatateCenter;
+        float movmentAngel = 0;
         float speed = 3.0f;
 
-        public bool ShootLine 
+        public bool ShootLine
         {
             get { return playerShootLine; }
         }
 
-        public Vector2 Position 
+        public Vector2 Position
         {
             get { return position; }
         }
 
-        public Player(int tileSize, DragLine dragline) 
+        public Player(int tileSize, DragLine dragline)
         {
             this.tileSize = tileSize;
             dragLine = dragline;
         }
 
-        public void Load(ContentManager Content, Map map) 
+        public void Load(ContentManager Content, Map map)
         {
-            texture = Content.Load<Texture2D>("Tiles/Player");
+            texture = Content.Load<Texture2D>("Tiles/boll");
             this.map = map;
 
             position = new Vector2(map.Width / 2, map.Height - tileSize * 2);
         }
 
-        public void Update(GameTime gameTime, Vector2 center) 
+        public void Update(GameTime gameTime, Vector2 center)
         {
+            Input(gameTime, position, center);
             if (isRotating)
             {
-                Vector2 rotationVector = ReleaseRotation(center, position);
+                rotatePosition = Rotate(position, center);
+                Vector2 rotationVector = ReleaseRotation(center, rotatePosition);
 
                 if (clockvise)
                 {
@@ -71,31 +76,33 @@ namespace GameProjekt.Content.Model
                 {
                     velocity = rotationVector * -1;
                 }
-                
-                rectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
-                isRotating = false;
+
+                rectangle = new Rectangle((int)rotatePosition.X, (int)rotatePosition.Y, tileSize, tileSize);
+                position = rotatePosition;
             }
             else if (!isRotating)
             {
                 if (playerShootLine)
                 {
-                    rotatePosition = Rotate(position, center);
-                    rectangle = new Rectangle((int)rotatePosition.X, (int)rotatePosition.Y, tileSize, tileSize);
-                    position = new Vector2(rotatePosition.X, rotatePosition.Y);
+
+                    //rectangle = new Rectangle((int)rotatePosition.X, (int)rotatePosition.Y, tileSize, tileSize);
+                    //position = new Vector2(rotatePosition.X, rotatePosition.Y);
+                    //Console.WriteLine(rotatePosition);
                     isRotating = true;
                 }
                 else
                 {
                     position += velocity;
                     rectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
+                    oldPosition.Y = position.Y - 1;
                 }
             }
             if (hasStarted && !beforeFirstRotation)
             {
                 velocity.Y = -speed;
             }
-            
-            Input(gameTime, position, center);                
+
+
         }
 
         public Vector2 MovmentDirection()
@@ -103,13 +110,13 @@ namespace GameProjekt.Content.Model
             Vector2 up = new Vector2(0, -1);
             Matrix rotMatrix = Matrix.CreateRotationZ(currentAngle);
             Vector2 movmentDirection = Vector2.Transform(up, rotMatrix);
-            Console.WriteLine(movmentDirection);
+            //Console.WriteLine(movmentDirection);
             return movmentDirection;
         }
 
         private void Input(GameTime gametime, Vector2 playerPosition, Vector2 center)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.W) && !hasStarted) 
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && !hasStarted)
             {
                 position.Y -= 0.8f;
                 hasStarted = true;
@@ -122,7 +129,32 @@ namespace GameProjekt.Content.Model
 
             if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                MovmentDirection();
+                //velocity = new Vector2(0, 0);
+                //Vector2 C = (position + MovmentDirection());
+                //Console.WriteLine(position);
+                //position = C;
+                //MovmentDirection();
+                //Vector2 c = position;
+                //c.Normalize();
+                //Vector2 a_normalized = position;
+                //Vector2 b_normalized = oldPosition;
+                //a_normalized.Normalize();
+                //b_normalized.Normalize();
+                //float angle = (float)Math.Atan2(a_normalized.Y - b_normalized.Y, a_normalized.X - b_normalized.X);
+
+                //float XDistance = position.X - oldPosition.X;
+                //float YDistance = position.Y - oldPosition.Y;
+                //movmentAngel = (float)Math.Sqrt(XDistance * XDistance + YDistance * YDistance);
+                //movmentAngel = (float)Math.Atan2(position.Y - oldPosition.Y, position.X - oldPosition.X);
+
+                var vector2 = position - center;
+                var vector1 = new Point(1, 0); // 12 o'clock == 0°, assuming that y goes from bottom to top
+
+                double angleInRadians = Math.Atan2(vector2.Y, vector2.X) - Math.Atan2(vector1.Y, vector1.X);
+                float a = (float)angleInRadians;
+                float b = MathHelper.ToDegrees(a);
+
+                Console.WriteLine(b);
             }
 
             //Kode for holding down space
@@ -133,14 +165,32 @@ namespace GameProjekt.Content.Model
                 // If not down last update, key has just been pressed.
                 if (!oldState.IsKeyDown(Keys.Space))
                 {
+                    Console.WriteLine(oldPosition.Y);
+                    Console.WriteLine(playerPosition.Y);
                     beforeFirstRotation = true;
-                    if (center.X < playerPosition.X)
+                    if (center.X < playerPosition.X)//Om user är på Vänster sida
                     {
-                        posistionForRotationDirection = true;
+                        posistionForRotationDirectionRightSide = false;
+                        if (oldPosition.Y < playerPosition.Y)
+                        {
+                            upMovement = false;
+                        }
+                        if (oldPosition.Y > playerPosition.Y)
+                        {
+                            upMovement = true;
+                        }
                     }
-                    else if (center.X > playerPosition.X)
+                    else if (center.X > playerPosition.X)//Om user är på höger sida
                     {
-                        posistionForRotationDirection = false;
+                        posistionForRotationDirectionRightSide = true;
+                        if (oldPosition.Y < playerPosition.Y)
+                        {
+                            upMovement = false;
+                        }
+                        if (oldPosition.Y > playerPosition.Y)
+                        {
+                            upMovement = true;
+                        }
                     }
                     isRotating = false;
                     playerShootLine = !playerShootLine;
@@ -155,42 +205,65 @@ namespace GameProjekt.Content.Model
             // Update saved state.
             oldState = newState;
             //If line not shot. Its not connected
-            if (!playerShootLine) 
+            if (!playerShootLine)
             {
-                dragLine.IsConnected = false; 
+                dragLine.IsConnected = false;
             }
         }
 
         public Vector2 Rotate(Vector2 currentPos, Vector2 centre)
         {
-            //float a = MathHelper.ToDegrees(currentAngle);
+
+            if (posistionForRotationDirectionRightSide)//Om user är på höger sida
+            {
+                if (upMovement)
+                {
+                    //currentAngle += angleStep;
+                    clockvise = false;
+                    return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
+                }
+                if (!upMovement)
+                {
+                    clockvise = true;
+                    return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep)) + centre;
+                }
+            }
+            if (!posistionForRotationDirectionRightSide)//Om user är på Vänster sida
+            {
+                if (upMovement)
+                {
+                    clockvise = true;
+                    return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
+                }
+                if (!upMovement)
+                {
+                    clockvise = false;
+                    return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep)) + centre;
+                }
+            }
+            return new Vector2(0, 0);
+
+            //if (posistionForRotationDirection)
+            //{
+            //    currentAngle -= angleStep;
+            //    clockvise = true;
+            //}
+            //else
+            //{
+            //    currentAngle += angleStep;
+            //    clockvise = false;
+            //}
+
             //float XDistance = currentPos.X - centre.X;
             //float YDistance = currentPos.Y - centre.Y;
             //distanceBetweenPlayerAndRoatateCenter = (float)Math.Sqrt(XDistance * XDistance + YDistance * YDistance);
-            //return new Vector2((float)(distanceBetweenPlayerAndRoatateCenter * Math.Cos(a)),
-            //    (float)(distanceBetweenPlayerAndRoatateCenter * Math.Sin(a))) + centre;
 
-            if (posistionForRotationDirection)
-            {
-                currentAngle -= angleStep;
-                clockvise = true;
-            }
-            else
-            {
-                currentAngle += angleStep;
-                clockvise = false;
-            }
+            //float xDifference = (float)Math.Cos(currentAngle);
+            //float yDifference = (float)Math.Sin(currentAngle);
+            //rotationDirection = new Vector2(xDifference, yDifference);
 
-            float XDistance = currentPos.X - centre.X;
-            float YDistance = currentPos.Y - centre.Y;
-            distanceBetweenPlayerAndRoatateCenter = (float)Math.Sqrt(XDistance * XDistance + YDistance * YDistance);
+            //return centre + (rotationDirection * distanceBetweenPlayerAndRoatateCenter);
 
-            float xDifference = (float)Math.Cos(currentAngle);
-            float yDifference = (float)Math.Sin(currentAngle);
-            rotationDirection = new Vector2(xDifference, yDifference);
-
-            Vector2 newPosition = centre + rotationDirection * distanceBetweenPlayerAndRoatateCenter;
-            return newPosition;
         }
 
         public Vector2 ReleaseRotation(Vector2 circle_center, Vector2 playerReleasePoint)
@@ -203,14 +276,14 @@ namespace GameProjekt.Content.Model
             return tangent * speed;
         }
 
-        public void Collision(Rectangle newRectangle) 
+        public void Collision(Rectangle newRectangle)
         {
-            if (rectangle.TouchTopOf(newRectangle) 
-                || rectangle.TouchLeftOf(newRectangle) 
-                || rectangle.TouchRightOf(newRectangle) 
-                || rectangle.TouchBottomOf(newRectangle)) 
+            if (rectangle.TouchTopOf(newRectangle)
+                || rectangle.TouchLeftOf(newRectangle)
+                || rectangle.TouchRightOf(newRectangle)
+                || rectangle.TouchBottomOf(newRectangle))
             {
-                ResetGame();    
+                ResetGame();
             }
         }
 
@@ -237,9 +310,9 @@ namespace GameProjekt.Content.Model
                 ResetGame();
             }
         }
-        
 
-        public void ResetGame() 
+
+        public void ResetGame()
         {
             position = new Vector2(map.Width / 2, map.Height - tileSize * 2);
             rotatePosition = position;
@@ -250,15 +323,15 @@ namespace GameProjekt.Content.Model
             beforeFirstRotation = false;
             currentAngle = 0;
             isRotating = false;
-            posistionForRotationDirection = false;
-            
+            posistionForRotationDirectionRightSide = false;
+
         }
 
-        public void Draw(SpriteBatch spriteBatch) 
-        {                                        
+        public void Draw(SpriteBatch spriteBatch)
+        {
             Vector2 origin = new Vector2(texture.Bounds.Width / 2, texture.Bounds.Height / 2);
             Rectangle size = new Rectangle(0, 0, texture.Width, texture.Height);
             spriteBatch.Draw(texture, rectangle, size, Color.White, currentAngle, origin, SpriteEffects.None, 0);
-       }        
+        }
     }
 }
