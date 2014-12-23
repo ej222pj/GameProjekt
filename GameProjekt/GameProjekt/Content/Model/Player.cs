@@ -34,8 +34,8 @@ namespace GameProjekt.Content.Model
         private bool isConnected = false;
         private int tileSize;
         private float currentAngle = 0f;
-        private float angleStep = -0.1f;
-        float speedY = 8f;
+        private float angleStep = -0.04f;
+        float speedY = 4f;
         float speedX = 0.1f;
 
         public bool ShootLine
@@ -79,9 +79,11 @@ namespace GameProjekt.Content.Model
             if (isRotating)
             {
                 rotatePosition = Rotate(position, center);
-                velocity = ReleaseRotation(center, rotatePosition);
-
-                rectangle = new Rectangle((int)rotatePosition.X, (int)rotatePosition.Y, tileSize, tileSize);
+                if (playerShootLine)
+                {
+                    velocity = ReleaseRotation(center, rotatePosition);
+                }
+                //rectangle = new Rectangle((int)rotatePosition.X, (int)rotatePosition.Y, tileSize, tileSize);
                 position = rotatePosition;
             }
             else if (!isRotating)
@@ -98,10 +100,11 @@ namespace GameProjekt.Content.Model
                 }
                 else
                 {
-                    rectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
+                    //rectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
                     oldPosition = position;
                 } 
             }
+            rectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
         }
 
         private void Input(GameTime gametime, Vector2 playerPosition, Vector2 center)
@@ -147,7 +150,6 @@ namespace GameProjekt.Content.Model
                         underCenter = false;
                         overCenter = true; 
                     }
-                    Console.WriteLine(center);
 
                     if (oldPosition.X > playerPosition.X)//Om user är på väg åt Vänster 
                     {
@@ -178,8 +180,6 @@ namespace GameProjekt.Content.Model
                 // it has just been released.
                 //shootLine = false;
                 // If not down last update, key has just been pressed.
-
-                
             }
             // Update saved state.
             oldState = newState;
@@ -192,7 +192,11 @@ namespace GameProjekt.Content.Model
 
         public Vector2 Rotate(Vector2 currentPos, Vector2 centre)
         {
-            Console.WriteLine(centre);
+            float XDistance = currentPos.X - centre.X;
+            float YDistance = currentPos.Y - centre.Y;
+            float distanceBetweenPlayerAndRoatateCenter = (float)Math.Sqrt(XDistance * XDistance + YDistance * YDistance);
+            Console.WriteLine(distanceBetweenPlayerAndRoatateCenter);
+
             if (overCenter && RightOfCenter && rightDirectionMovment && !upMovement)//Om user är över till höger om centrum, rör sig höger neråt
             {
                 return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
