@@ -11,6 +11,13 @@ namespace GameProjekt.Content.Model
 {
     class Player
     {
+        enum SelectLevel
+        {
+            firstLevel,
+            secondLevel,
+            thirdLevel,
+        }
+
         private Texture2D texture;
         private Vector2 position;
         private Vector2 velocity;
@@ -37,6 +44,12 @@ namespace GameProjekt.Content.Model
         private float angleStep = -0.04f;
         float speedY = 4f;
         float speedX = 0.1f;
+        SelectLevel selectLevel;
+
+        public Enum GetSelectLevel() 
+        {
+            return selectLevel;
+        }
 
         public bool ShootLine
         {
@@ -60,6 +73,7 @@ namespace GameProjekt.Content.Model
 
         public Player(int tileSize, DragLine dragline)
         {
+            selectLevel = SelectLevel.firstLevel;
             this.tileSize = tileSize;
             dragLine = dragline;
         }
@@ -104,7 +118,7 @@ namespace GameProjekt.Content.Model
                     oldPosition = position;
                 } 
             }
-            rectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
+            rectangle = new Rectangle((int)position.X - tileSize / 2, (int)position.Y - tileSize / 2, tileSize, tileSize);
         }
 
         private void Input(GameTime gametime, Vector2 playerPosition, Vector2 center)
@@ -261,32 +275,7 @@ namespace GameProjekt.Content.Model
             {
                 return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep)) + centre;
             }
-            Console.WriteLine("Fuck");
             return new Vector2(0, 0);
-
-
-
-            //if (posistionForRotationDirection)
-            //{
-            //    currentAngle -= angleStep;
-            //    clockvise = true;
-            //}
-            //else
-            //{
-            //    currentAngle += angleStep;
-            //    clockvise = false;
-            //}
-
-            //float XDistance = currentPos.X - centre.X;
-            //float YDistance = currentPos.Y - centre.Y;
-            //distanceBetweenPlayerAndRoatateCenter = (float)Math.Sqrt(XDistance * XDistance + YDistance * YDistance);
-
-            //float xDifference = (float)Math.Cos(currentAngle);
-            //float yDifference = (float)Math.Sin(currentAngle);
-            //rotationDirection = new Vector2(xDifference, yDifference);
-
-            //return centre + (rotationDirection * distanceBetweenPlayerAndRoatateCenter);
-
         }
 
         public Vector2 ReleaseRotation(Vector2 circle_center, Vector2 playerReleasePoint)
@@ -295,11 +284,6 @@ namespace GameProjekt.Content.Model
             Vector2 dir = playerReleasePoint - circle_center;
             Vector2 tangent = new Vector2(dir.Y, -dir.X);
             tangent.Normalize();
-
-           // if (upMovement)
-               // return (tangent * speedY);
-            //else
-            //    return (tangent * speedY) * -1;
 
                 if (overCenter && RightOfCenter && rightDirectionMovment && !upMovement)//Om user är över till höger om centrum, rör sig höger neråt
                 {
@@ -389,18 +373,23 @@ namespace GameProjekt.Content.Model
                 hasStarted = false;
             }
             if (rectangle.TouchLeftOf(newRectangle))//Höger sidan av skärmen
-            {   //Ska egentligen döda spelaren
-                position.X = newRectangle.X - rectangle.Width - 5;
-                velocity.X = velocity.X * -1.0f;
+            {
+                ResetGame();
             }
             if (rectangle.TouchRightOf(newRectangle))//Vänster sida av skärmen
-            {   //Ska egentligen döda spelaren
-                position.X = newRectangle.X + newRectangle.Width + 5;
-                velocity.X = velocity.X * -1.0f;
+            {
+                ResetGame();
             }
             if (rectangle.TouchBottomOf(newRectangle))//Längst upp på skärmen
             {   //Ska vinna banan
-                ResetGame();
+                if (selectLevel == SelectLevel.firstLevel) 
+                {
+                    selectLevel = SelectLevel.secondLevel;
+                }
+                else if (selectLevel == SelectLevel.secondLevel)
+                {
+                    selectLevel = SelectLevel.thirdLevel;
+                }
             }
         }
 
@@ -423,9 +412,7 @@ namespace GameProjekt.Content.Model
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            Vector2 origin = new Vector2(texture.Bounds.Width / 2, texture.Bounds.Height / 2);
-            Rectangle size = new Rectangle(0, 0, texture.Width, texture.Height);
-            spriteBatch.Draw(texture, rectangle, size, Color.White, currentAngle, origin, SpriteEffects.None, 0);
+            spriteBatch.Draw(texture, rectangle, Color.White);
         }
     }
 }

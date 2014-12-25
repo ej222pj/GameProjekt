@@ -29,3 +29,4 @@ C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\obj\x86\Debug
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\obj\x86\Debug\GameProjekt.pdb
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\obj\x86\Debug\GameProjekt.csprojResolveAssemblyReference.cache
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Maps\Map1.txt
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Maps\Map2.txt

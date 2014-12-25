@@ -36,7 +36,6 @@ namespace GameProjekt.Content.Controller
         private int tileSize = 32;
         Vector2 closestTile;
         float distance;
-        string mapFilePath = "./Content/Maps/Map1.txt";
 
         Texture2D dragTexture;
 
@@ -87,7 +86,14 @@ namespace GameProjekt.Content.Controller
 
             camera = new Camera(GraphicsDevice.Viewport);
 
-            map.Generate(tileSize, mapFilePath);
+            int level = 1;
+            //if (player.GetSelectLevel().) { level = 1; }
+            //else if (false) { level = 2; }
+            //else if (false) { level = 3; };
+            level = player.GetSelectLevel().GetHashCode();
+            string mapFilePath = "./Content/Maps/Map{0}.txt";
+            string filePath = string.Format(mapFilePath, level + 1);
+            map.Generate(tileSize, filePath);
 
             player.Load(Content, map);
         }
