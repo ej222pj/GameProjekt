@@ -29,7 +29,7 @@ namespace GameProjekt.Content.View
 
         public void Update(MouseState mouse) 
         {
-            rectangle = new Rectangle((int)position.X / 2, (int)position.Y / 2, (int)size.X, (int)size.Y);
+            rectangle = new Rectangle((int)((position.X / 2) + (size.X / 2)), (int)position.Y / 2, (int)size.X, (int)size.Y / 2);
 
             Rectangle mouseRectangle = new Rectangle(mouse.X, mouse.Y, 1, 1);
 

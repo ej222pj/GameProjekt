@@ -28,6 +28,8 @@ namespace GameProjekt.Content.Controller
 
         Button btnPlay;
         Button btnQuit;
+        Button btnNextLevel;
+        Button btnMainMenu;
         int i = 0;
         Map map;
         Player player;
@@ -77,11 +79,17 @@ namespace GameProjekt.Content.Controller
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            btnPlay = new Button(Content.Load<Texture2D>("Tiles/Tile2"), graphics.GraphicsDevice);
-            btnPlay.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2));
+            btnPlay = new Button(Content.Load<Texture2D>("Tiles/start"), graphics.GraphicsDevice);
+            btnPlay.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 1.5f));
 
-            btnQuit = new Button(Content.Load<Texture2D>("Tiles/Tile2"), graphics.GraphicsDevice);
-            btnQuit.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2 + 300));
+            btnQuit = new Button(Content.Load<Texture2D>("Tiles/quit"), graphics.GraphicsDevice);
+            btnQuit.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 1.1f));
+
+            btnNextLevel = new Button(Content.Load<Texture2D>("Tiles/nextlevel"), graphics.GraphicsDevice);
+            btnNextLevel.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 1.5f));
+
+            btnMainMenu = new Button(Content.Load<Texture2D>("Tiles/mainmenu"), graphics.GraphicsDevice);
+            btnMainMenu.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 1.1f));
 
             dragTexture = Content.Load<Texture2D>("Tiles/pixel");
             background = Content.Load<Texture2D>("Tiles/Background");
@@ -140,11 +148,12 @@ namespace GameProjekt.Content.Controller
                     break;
 
                 case GameState.WinLevelScreen:
-                    if (btnPlay.isClicked == true || Keyboard.GetState().IsKeyDown(Keys.Space))
+                    if (btnNextLevel.isClicked == true || Keyboard.GetState().IsKeyDown(Keys.Space))
                     {
                         CurrentGameState = GameState.Playing;
                     }
-                    btnPlay.Update(mouse);
+                    btnNextLevel.Update(mouse);
+                    btnMainMenu.Update(mouse);
                     changeLevel = true;
                     break;
 
@@ -222,8 +231,9 @@ namespace GameProjekt.Content.Controller
 
                 case GameState.WinLevelScreen:
                     spriteBatch.Begin();
-                    spriteBatch.Draw(Content.Load<Texture2D>("Tiles/Tile2"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
-                    btnPlay.Draw(spriteBatch);
+                    spriteBatch.Draw(Content.Load<Texture2D>("Tiles/LevelComplete"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+                    btnNextLevel.Draw(spriteBatch);
+                    btnMainMenu.Draw(spriteBatch);
                     spriteBatch.End();
                     break;
 
@@ -269,7 +279,7 @@ namespace GameProjekt.Content.Controller
 
                 case GameState.QuitPause:
                     spriteBatch.Begin();
-                    spriteBatch.Draw(Content.Load<Texture2D>("Tiles/Player"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+                    spriteBatch.Draw(Content.Load<Texture2D>("Tiles/pausescreen"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
                     btnPlay.Draw(spriteBatch);
                     btnQuit.Draw(spriteBatch);
                     spriteBatch.End();
