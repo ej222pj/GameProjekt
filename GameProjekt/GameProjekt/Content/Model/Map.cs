@@ -36,6 +36,13 @@ namespace GameProjekt.Content.Model
 
         public void Generate(int size, string mapFilePath)
         {
+            if (collisionTiles != null) 
+                collisionTiles = new List<CollisionTiles>();
+            if(borderTiles != null)
+                borderTiles = new List<BorderTiles>();
+            if(lines != null)
+                lines = new List<string>();
+
             StreamReader reader;
             reader = new StreamReader(mapFilePath);
             int[,] data = null;
@@ -68,7 +75,7 @@ namespace GameProjekt.Content.Model
                             }
                             if (data[i, j] == 2)
                             {
-                                collisionTiles.Add(new CollisionTiles(2, new Rectangle(j * size, i * size, size, size)));
+                                collisionTiles.Add(new CollisionTiles(2, new Rectangle(j * size , i * size, size, size)));
                             }
                             width = (j + 1) * size;
                             height = (i + 1) * size;

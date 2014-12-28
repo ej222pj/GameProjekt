@@ -28,32 +28,38 @@ namespace GameProjekt.Content.Model
         DragLine dragLine;
         Map map;
 
-        private bool hasStarted = false;
-        private bool playerShootLine = false;
-        private bool isRotating = false;
-        private bool rightDirectionMovment = true;
-        private bool beforeFirstRotation = false;
-        private bool upMovement = true;
-        private bool RightOfCenter = false;
-        private bool LeftOfCenter = false;
-        private bool overCenter = false;
-        private bool underCenter = false;
-        private bool isConnected = false;
+        private bool hasStarted;
+        private bool playerShootLine;
+        private bool isRotating;
+        private bool rightDirectionMovment;
+        private bool beforeFirstRotation;
+        private bool upMovement;
+        private bool RightOfCenter;
+        private bool LeftOfCenter;
+        private bool overCenter;
+        private bool underCenter;
+        private bool isConnected;
         private int tileSize;
-        private float currentAngle = 0f;
+        private bool hitTopOfMap;
         private float angleStep = -0.04f;
         float speedY = 4f;
         float speedX = 0.1f;
         SelectLevel selectLevel;
 
-        public Enum GetSelectLevel() 
+        public int GetSelectLevel() 
         {
-            return selectLevel;
+            return selectLevel.GetHashCode() + 1;
         }
 
         public bool ShootLine
         {
             get { return playerShootLine; }
+        }
+
+        public bool HitTopOfMap
+        {
+            get { return hitTopOfMap; }
+            set { hitTopOfMap = value; }
         }
         public bool HasStarted
         {
@@ -73,6 +79,7 @@ namespace GameProjekt.Content.Model
 
         public Player(int tileSize, DragLine dragline)
         {
+            
             selectLevel = SelectLevel.firstLevel;
             this.tileSize = tileSize;
             dragLine = dragline;
@@ -84,18 +91,20 @@ namespace GameProjekt.Content.Model
             this.map = map;
 
             position = new Vector2(map.Width / 2, map.Height - tileSize * 2);
+            ResetGame();
         }
 
-        public void Update(GameTime gameTime, Vector2 center)
+        public void Update(GameTime gameTime, Vector2 clostestTile, Vector2 connectedTile)
         {
             position += velocity;
-            Input(gameTime, position, center);
+            Input(gameTime, position, clostestTile);
             if (isRotating)
             {
-                rotatePosition = Rotate(position, center);
+                Console.WriteLine(connectedTile);
+                rotatePosition = Rotate(position, connectedTile);
                 if (playerShootLine)
                 {
-                    velocity = ReleaseRotation(center, rotatePosition);
+                    velocity = ReleaseRotation(connectedTile, rotatePosition);
                 }
                 //rectangle = new Rectangle((int)rotatePosition.X, (int)rotatePosition.Y, tileSize, tileSize);
                 position = rotatePosition;
@@ -144,22 +153,22 @@ namespace GameProjekt.Content.Model
             {
                 if (!oldState.IsKeyDown(Keys.Space))
                 {
-                    if (oldPosition.X < center.X)//Vänster om Center 
+                    if (playerPosition.X < center.X)//Vänster om Center 
                     {
                         LeftOfCenter = true;
                         RightOfCenter = false;
                     }
-                    if (oldPosition.X > center.X) //Höger om center
+                    if (playerPosition.X > center.X) //Höger om center
                     {
                         LeftOfCenter = false;
                         RightOfCenter = true;
                     }
-                    if (oldPosition.Y > center.Y) //Under Center
+                    if (playerPosition.Y > center.Y) //Under Center
                     {
                         underCenter = true;
                         overCenter = false;
                     }
-                    if (oldPosition.Y < center.Y)//Över center
+                    if (playerPosition.Y < center.Y)//Över center
                     {
                         underCenter = false;
                         overCenter = true; 
@@ -174,8 +183,6 @@ namespace GameProjekt.Content.Model
                     {
                         rightDirectionMovment = true;
                     }
-                    //Console.WriteLine(oldPosition); 
-                    //Console.WriteLine(playerPosition);
                     if (oldPosition.Y < playerPosition.Y)//ÅKer ner
                     {
                         upMovement = false;
@@ -205,12 +212,7 @@ namespace GameProjekt.Content.Model
         }
 
         public Vector2 Rotate(Vector2 currentPos, Vector2 centre)
-        {
-            float XDistance = currentPos.X - centre.X;
-            float YDistance = currentPos.Y - centre.Y;
-            float distanceBetweenPlayerAndRoatateCenter = (float)Math.Sqrt(XDistance * XDistance + YDistance * YDistance);
-            Console.WriteLine(distanceBetweenPlayerAndRoatateCenter);
-
+        {       
             if (overCenter && RightOfCenter && rightDirectionMovment && !upMovement)//Om user är över till höger om centrum, rör sig höger neråt
             {
                 return Vector2.Transform(currentPos - centre, Matrix.CreateRotationZ(angleStep * -1)) + centre;
@@ -382,17 +384,27 @@ namespace GameProjekt.Content.Model
             }
             if (rectangle.TouchBottomOf(newRectangle))//Längst upp på skärmen
             {   //Ska vinna banan
-                if (selectLevel == SelectLevel.firstLevel) 
+                if (selectLevel == SelectLevel.firstLevel && !HitTopOfMap) 
                 {
+                    HitTopOfMap = true;
                     selectLevel = SelectLevel.secondLevel;
+                    Console.WriteLine("1");
                 }
-                else if (selectLevel == SelectLevel.secondLevel)
+                else if (selectLevel == SelectLevel.secondLevel && !HitTopOfMap)
                 {
+                    HitTopOfMap = true;
                     selectLevel = SelectLevel.thirdLevel;
+                    Console.WriteLine("2");
                 }
+                else if (selectLevel == SelectLevel.thirdLevel && !HitTopOfMap)
+                {
+                    HitTopOfMap = true;
+                    Console.WriteLine("3");
+                    //Man vann
+                }
+                
             }
         }
-
 
         public void ResetGame()
         {
@@ -402,16 +414,23 @@ namespace GameProjekt.Content.Model
             velocity.X = 0.0f;
             hasStarted = false;
             playerShootLine = false;
+            isRotating = false;
+            rightDirectionMovment = true;
             beforeFirstRotation = false;
             upMovement = true;
-            currentAngle = 0;
-            isRotating = false;
-            rightDirectionMovment = false;
-
+            RightOfCenter = false;
+            LeftOfCenter = false;
+            overCenter = false;
+            underCenter = false;
+            isConnected = false;
+            hitTopOfMap = false;
+            angleStep = -0.04f;
+            speedY = 4f;
+            speedX = 0.1f;
         }
 
         public void Draw(SpriteBatch spriteBatch)
-        {
+        {   
             spriteBatch.Draw(texture, rectangle, Color.White);
         }
     }

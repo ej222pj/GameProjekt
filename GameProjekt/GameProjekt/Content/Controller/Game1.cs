@@ -27,7 +27,7 @@ namespace GameProjekt.Content.Controller
 
         Button btnPlay;
         Button btnQuit;
-
+        int i = 0;
         Map map;
         Player player;
         DragLine dragLine;
@@ -35,7 +35,9 @@ namespace GameProjekt.Content.Controller
         float closestDistance = float.MaxValue;
         private int tileSize = 32;
         Vector2 closestTile;
+        Vector2 connectedTile;
         float distance;
+        bool changeLevel = false;
 
         Texture2D dragTexture;
 
@@ -86,14 +88,10 @@ namespace GameProjekt.Content.Controller
 
             camera = new Camera(GraphicsDevice.Viewport);
 
-            int level = 1;
-            //if (player.GetSelectLevel().) { level = 1; }
-            //else if (false) { level = 2; }
-            //else if (false) { level = 3; };
-            level = player.GetSelectLevel().GetHashCode();
-            string mapFilePath = "./Content/Maps/Map{0}.txt";
-            string filePath = string.Format(mapFilePath, level + 1);
-            map.Generate(tileSize, filePath);
+            //int level = player.GetSelectLevel().GetHashCode();
+            //string mapFilePath = "./Content/Maps/Map{0}.txt";
+            //string filePath = string.Format(mapFilePath, level + 1);
+            //map.Generate(tileSize, filePath);
 
             player.Load(Content, map);
         }
@@ -107,6 +105,13 @@ namespace GameProjekt.Content.Controller
             // TODO: Unload any non ContentManager content here
         }
 
+        private void generateMap() 
+        {
+            string mapFilePath = "./Content/Maps/Map{0}.txt";
+            string filePath = string.Format(mapFilePath, player.GetSelectLevel());
+            map.Generate(tileSize, filePath); 
+        }
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -116,53 +121,68 @@ namespace GameProjekt.Content.Controller
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape) || Keyboard.GetState().IsKeyDown(Keys.Q))
                 CurrentGameState = GameState.QuitPause;
-                
 
             MouseState mouse = Mouse.GetState();
 
             // TODO: Add your update logic here
-                switch (CurrentGameState)
-                {
-                    case GameState.MainMenu:
-                        if (btnPlay.isClicked == true || Keyboard.GetState().IsKeyDown(Keys.Space))
-                        {
-                            CurrentGameState = GameState.Playing;
-                        }
-                        btnPlay.Update(mouse);
-                        break;
+            switch (CurrentGameState)
+            {
+                case GameState.MainMenu:
+                    if (btnPlay.isClicked == true || Keyboard.GetState().IsKeyDown(Keys.Space))
+                    {
+                        CurrentGameState = GameState.Playing;
+                    }
+                    btnPlay.Update(mouse);
+                    changeLevel = true;
+                    break;
 
-                    case GameState.Playing:
-                        if (dragLine.IsConnected)
-                        {
-                            player.IsConnected = true;
-                        }
-                        btnPlay.isClicked = false;
-                        player.Update(gameTime, closestTile);
-                        dragLine.Update(player.Position);
-                        foreach (CollisionTiles tile in map.CollisionTiles)
-                        {
-                            player.Collision(tile.Rectangle);
-                        }
+                case GameState.Playing:
+                    if (changeLevel || player.HitTopOfMap)
+                    {
+                        generateMap();
+                        changeLevel = false;
+                        player.HitTopOfMap = false;
+                    }
+                    
+                    if (dragLine.IsConnected)
+                    {
+                        player.IsConnected = true;
+                    }
+                    btnPlay.isClicked = false;
+                    player.Update(gameTime, closestTile, connectedTile);
+                    dragLine.Update(player.Position);
+                    foreach (CollisionTiles tile in map.CollisionTiles)
+                    {
+                        player.Collision(tile.Rectangle);
+                    }
 
-                        foreach (BorderTiles tile in map.BorderTiles)
+                    foreach (BorderTiles tile in map.BorderTiles)
+                    {
+                        
+                        player.BorderCollision(tile.Rectangle);
+                        if (player.HitTopOfMap)
                         {
-                            player.BorderCollision(tile.Rectangle);
-                            camera.Update(player.Position, map.Width, map.Height);
+                            player.ResetGame();
+                            CurrentGameState = GameState.MainMenu;
+                            break;
                         }
-                        break;
+                        camera.Update(player.Position, map.Width, map.Height);
+                    }
+                    
+                    break;
 
-                    case GameState.QuitPause:
-                        if (btnQuit.isClicked == true)
-                        {
-                            Exit();
-                        }
-                        if (btnPlay.isClicked == true || Keyboard.GetState().IsKeyDown(Keys.Space))
-                        {
-                            CurrentGameState = GameState.Playing;
-                        }
-                        btnPlay.Update(mouse);
-                        btnQuit.Update(mouse);
-                        break;
+                case GameState.QuitPause:
+                    if (btnQuit.isClicked == true)
+                    {
+                        Exit();
+                    }
+                    if (btnPlay.isClicked == true || Keyboard.GetState().IsKeyDown(Keys.Space))
+                    {
+                        CurrentGameState = GameState.Playing;
+                    }
+                    btnPlay.Update(mouse);
+                    btnQuit.Update(mouse);
+                    break;
             }         
             base.Update(gameTime);
         }
@@ -192,10 +212,10 @@ namespace GameProjekt.Content.Controller
                     
                     if (dragLine.IsConnected) 
                     {
-                        dragLine.DrawLine(spriteBatch, dragTexture, closestTile);
+                        dragLine.DrawLine(spriteBatch, dragTexture, connectedTile);
                     }
-                    else if (player.ShootLine)
-                    {
+                    //else if (player.ShootLine)
+                    //{
                         Vector2? closest = null;
                         //Denna koden kommer ifrån: http://stackoverflow.com/questions/6920238/xna-find-nearest-vector-from-player skriven av User: Cameron 
                         foreach (CollisionTiles position in map.CollisionTiles)
@@ -205,13 +225,22 @@ namespace GameProjekt.Content.Controller
                             distance = (float)Math.Sqrt(Math.Pow(player.Position.X - tilePosision.X, 2) + Math.Pow(player.Position.Y - tilePosision.Y, 2));
                             if (!closest.HasValue || distance < closestDistance)
                             {
+                                
                                 closest = tilePosision;
                                 closestDistance = distance;
                                 closestTile = closest.Value;
+                                if (player.ShootLine && !dragLine.IsConnected)
+                                {
+                                    connectedTile = closest.Value;
+                                }
                             }
                         }// closest.Value now contains the closest vector to the player
-                        dragLine.DrawLine(spriteBatch, dragTexture, closest.Value);
-                    }
+                        if (player.ShootLine && !dragLine.IsConnected)
+                        {
+                            dragLine.DrawLine(spriteBatch, dragTexture, closest.Value);
+                        }
+                        //dragLine.DrawLine(spriteBatch, dragTexture, closest.Value);
+                    //}
                     spriteBatch.End();
                     break;
 
