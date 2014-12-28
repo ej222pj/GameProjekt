@@ -1,4 +1,3 @@
-C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\boll.png
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\pixel.jpg
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\Player.jpg
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\Tile1.jpg
@@ -32,3 +31,7 @@ C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\D
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Maps\Map2.txt
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\hook.png
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Maps\Map3.txt
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\user.png
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\Background.png
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\Border.png
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\Collision.png

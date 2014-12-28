@@ -18,6 +18,7 @@ namespace GameProjekt.Content.Controller
             MainMenu,
             Options,
             Playing,
+            WinLevelScreen,
             QuitPause,
         }
         GameState CurrentGameState = GameState.MainMenu;
@@ -40,6 +41,7 @@ namespace GameProjekt.Content.Controller
         bool changeLevel = false;
 
         Texture2D dragTexture;
+        Texture2D background;
 
         public Game1()
             : base()
@@ -82,6 +84,7 @@ namespace GameProjekt.Content.Controller
             btnQuit.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2 + 300));
 
             dragTexture = Content.Load<Texture2D>("Tiles/pixel");
+            background = Content.Load<Texture2D>("Tiles/Background");
 
             // TODO: use this.Content to load your game content here
             Tiles.Content = Content;
@@ -136,12 +139,22 @@ namespace GameProjekt.Content.Controller
                     changeLevel = true;
                     break;
 
+                case GameState.WinLevelScreen:
+                    if (btnPlay.isClicked == true || Keyboard.GetState().IsKeyDown(Keys.Space))
+                    {
+                        CurrentGameState = GameState.Playing;
+                    }
+                    btnPlay.Update(mouse);
+                    changeLevel = true;
+                    break;
+
                 case GameState.Playing:
                     if (changeLevel || player.HitTopOfMap)
                     {
                         generateMap();
                         changeLevel = false;
                         player.HitTopOfMap = false;
+                        player.ResetGame();
                     }
                     
                     if (dragLine.IsConnected)
@@ -163,7 +176,7 @@ namespace GameProjekt.Content.Controller
                         if (player.HitTopOfMap)
                         {
                             player.ResetGame();
-                            CurrentGameState = GameState.MainMenu;
+                            CurrentGameState = GameState.WinLevelScreen;
                             break;
                         }
                         camera.Update(player.Position, map.Width, map.Height);
@@ -193,13 +206,23 @@ namespace GameProjekt.Content.Controller
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Gray);
+            //GraphicsDevice.Clear(Color.Gray);
+            spriteBatch.Begin();
+            spriteBatch.Draw(background, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+            spriteBatch.End();
             // TODO: Add your drawing code here
             switch (CurrentGameState)
             {
                 case GameState.MainMenu:
                     spriteBatch.Begin();
                     spriteBatch.Draw(Content.Load<Texture2D>("Tiles/Tile1"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+                    btnPlay.Draw(spriteBatch);
+                    spriteBatch.End();
+                    break;
+
+                case GameState.WinLevelScreen:
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(Content.Load<Texture2D>("Tiles/Tile2"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
                     btnPlay.Draw(spriteBatch);
                     spriteBatch.End();
                     break;

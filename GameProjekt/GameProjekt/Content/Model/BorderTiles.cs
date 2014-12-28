@@ -11,7 +11,7 @@ namespace GameProjekt.Content.Model
     {
         public BorderTiles(int i, Rectangle newRectangle)
         {
-            texture = Content.Load<Texture2D>("Tiles/Tile1");
+            texture = Content.Load<Texture2D>("Tiles/Border");
             this.Rectangle = newRectangle;
         }
     }

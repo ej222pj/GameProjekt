@@ -79,7 +79,6 @@ namespace GameProjekt.Content.Model
 
         public Player(int tileSize, DragLine dragline)
         {
-            
             selectLevel = SelectLevel.firstLevel;
             this.tileSize = tileSize;
             dragLine = dragline;
@@ -87,11 +86,8 @@ namespace GameProjekt.Content.Model
 
         public void Load(ContentManager Content, Map map)
         {
-            texture = Content.Load<Texture2D>("Tiles/boll");
+            texture = Content.Load<Texture2D>("Tiles/user");
             this.map = map;
-
-            position = new Vector2(map.Width / 2, map.Height - tileSize * 2);
-            ResetGame();
         }
 
         public void Update(GameTime gameTime, Vector2 clostestTile, Vector2 connectedTile)

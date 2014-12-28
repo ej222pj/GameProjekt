@@ -11,7 +11,7 @@ namespace GameProjekt.Content.Model
     {
         public CollisionTiles(int i, Rectangle newRectangle) 
         {
-            texture = Content.Load<Texture2D>("Tiles/hook");
+            texture = Content.Load<Texture2D>("Tiles/Collision");
             this.Rectangle = newRectangle;
         }
     }

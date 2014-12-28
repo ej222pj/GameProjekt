@@ -77,6 +77,10 @@ namespace GameProjekt.Content.Model
                             {
                                 collisionTiles.Add(new CollisionTiles(2, new Rectangle(j * size , i * size, size, size)));
                             }
+                            if (data[i, j] == 3)
+                            {
+                                borderTiles.Add(new BorderTiles(3, new Rectangle(j * size, i * size, size, size)));
+                            }
                             width = (j + 1) * size;
                             height = (i + 1) * size;
                         }
