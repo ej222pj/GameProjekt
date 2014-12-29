@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace GameProjekt.Content.Controller
 {
@@ -18,8 +19,9 @@ namespace GameProjekt.Content.Controller
             MainMenu,
             Options,
             Playing,
-            WinLevelScreen,
+            WinLevel,
             Pause,
+            Dead,
         }
         GameState CurrentGameState = GameState.MainMenu;
 
@@ -36,6 +38,7 @@ namespace GameProjekt.Content.Controller
         PlayerView playerView;
         DragLine dragLine;
         Camera camera;
+        SplitterSystem splitterSystem;
         float closestDistance = float.MaxValue;
         private int tileSize = 32;
         Vector2 closestTile;
@@ -45,6 +48,7 @@ namespace GameProjekt.Content.Controller
 
         Texture2D dragTexture;
         Texture2D background;
+        Texture2D splitterTexture;
 
         public Game1()
             : base()
@@ -70,6 +74,7 @@ namespace GameProjekt.Content.Controller
             player = new Player(tileSize);
             playerView = new PlayerView();
             drawMap = new DrawMap();
+            splitterSystem = new SplitterSystem(GraphicsDevice.Viewport);
 
             base.Initialize();
         }
@@ -96,6 +101,7 @@ namespace GameProjekt.Content.Controller
 
             dragTexture = Content.Load<Texture2D>("Tiles/pixel");
             background = Content.Load<Texture2D>("Tiles/Background");
+            splitterTexture = Content.Load<Texture2D>("Tiles/spark");
 
             // TODO: use this.Content to load your game content here
             Tiles.Content = Content;
@@ -135,7 +141,7 @@ namespace GameProjekt.Content.Controller
         protected override void Update(GameTime gameTime)
         {
             if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape) || Keyboard.GetState().IsKeyDown(Keys.Q)) && CurrentGameState == GameState.Playing)
-                CurrentGameState = GameState.Pause;
+                CurrentGameState = GameState.Pause;                 
 
             MouseState mouse = Mouse.GetState();
 
@@ -157,7 +163,7 @@ namespace GameProjekt.Content.Controller
                     changeLevel = true;
                     break;
 
-                case GameState.WinLevelScreen:
+                case GameState.WinLevel:
                     if (btnNextLevel.isClicked == true || Keyboard.GetState().IsKeyDown(Keys.Space))
                     {
                         CurrentGameState = GameState.Playing;
@@ -185,12 +191,18 @@ namespace GameProjekt.Content.Controller
                     {
                         player.IsConnected = true;
                     }
+
                     btnPlay.isClicked = false;
                     player.Update(gameTime, closestTile, connectedTile);
                     dragLine.Update(player.Position);
                     foreach (CollisionTiles tile in map.CollisionTiles)
                     {
                         player.Collision(tile.Rectangle);
+                        if (player.GetPlayerIsDead)
+                        {
+                            CurrentGameState = GameState.Dead;
+                            break;
+                        }
                     }
 
                     foreach (BorderTiles tile in map.BorderTiles)
@@ -200,15 +212,36 @@ namespace GameProjekt.Content.Controller
                         if (player.HitTopOfMap)
                         {
                             player.ResetGame();
-                            CurrentGameState = GameState.WinLevelScreen;
+                            CurrentGameState = GameState.WinLevel;
                             break;
                         }
+                        if (player.GetPlayerIsDead)
+                        {
+                            CurrentGameState = GameState.Dead;
+                            break;
+                        }
+
                         camera.Update(player.Position, map.Width, map.Height);
                     }
                     
                     break;
 
                 case GameState.Pause:
+                    if (btnMainMenu.isClicked == true)
+                    {
+                        CurrentGameState = GameState.MainMenu;
+                        System.Threading.Thread.Sleep(300);
+                    }
+                    if (btnPlay.isClicked == true || Keyboard.GetState().IsKeyDown(Keys.Space))
+                    {
+                        CurrentGameState = GameState.Playing;
+                        System.Threading.Thread.Sleep(100);
+                    }
+                    btnPlay.Update(mouse);
+                    btnMainMenu.Update(mouse);
+                    break;
+
+                case GameState.Dead:
                     if (btnMainMenu.isClicked == true)
                     {
                         CurrentGameState = GameState.MainMenu;
@@ -247,7 +280,7 @@ namespace GameProjekt.Content.Controller
                     spriteBatch.End();
                     break;
 
-                case GameState.WinLevelScreen:
+                case GameState.WinLevel:
                     spriteBatch.Begin();
                     spriteBatch.Draw(Content.Load<Texture2D>("Tiles/LevelComplete"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
                     btnNextLevel.Draw(spriteBatch);
@@ -259,8 +292,7 @@ namespace GameProjekt.Content.Controller
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
                     drawMap.Draw(spriteBatch, map.CollisionTiles, map.BorderTiles);
                     playerView.Draw(spriteBatch, player.Position, tileSize);
-
-                    
+                                                                                                                           
                     if (dragLine.IsConnected) 
                     {
                         dragLine.DrawLine(spriteBatch, dragTexture, connectedTile);
@@ -298,6 +330,21 @@ namespace GameProjekt.Content.Controller
                 case GameState.Pause:
                     spriteBatch.Begin();
                     spriteBatch.Draw(Content.Load<Texture2D>("Tiles/pausescreen"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+                    btnPlay.Draw(spriteBatch);
+                    btnMainMenu.Draw(spriteBatch);
+                    spriteBatch.End();
+                    break;
+
+                case GameState.Dead:
+                    spriteBatch.Begin();
+                    if (player.GetPlayerIsDead)
+                    {
+                        
+                        splitterSystem.Draw(spriteBatch, splitterTexture, (float)gameTime.ElapsedGameTime.TotalSeconds, player.Position);
+                        Thread.Sleep(1000);
+                        player.ResetGame();
+                    }
+                    spriteBatch.Draw(Content.Load<Texture2D>("Tiles/Tile1"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
                     btnPlay.Draw(spriteBatch);
                     btnMainMenu.Draw(spriteBatch);
                     spriteBatch.End();

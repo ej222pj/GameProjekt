@@ -41,3 +41,4 @@ C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\D
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\quit.png
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\pausescreen.png
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\mainmenu.png
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\spark.png

@@ -47,6 +47,8 @@
     <Compile Include="Content\View\Camera.cs" />
     <Compile Include="Content\View\DrawMap.cs" />
     <Compile Include="Content\View\PlayerView.cs" />
+    <Compile Include="Content\View\SplitterParticle.cs" />
+    <Compile Include="Content\View\SplitterSystem.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -98,6 +100,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Tiles\quit.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Tiles\spark.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Tiles\start.png">

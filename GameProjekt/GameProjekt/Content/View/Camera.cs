@@ -9,18 +9,50 @@ namespace GameProjekt.Content.View
 {
     class Camera
     {
+        private int width;
+        private int height;
+        private float scale;
         private Matrix transform;
+        private Vector2 center;
+        private Viewport viewport;
         public Matrix Transform 
         {
             get { return transform;  }
         }
 
-        private Vector2 center;
-        private Viewport viewport;
+        public float Scale
+        {
+            get { return scale; }
+        }           
 
         public Camera(Viewport newViewport) 
         {
             viewport = newViewport;
+            int scaleX = (viewport.Width);
+            int scaleY = (viewport.Height);
+
+            scale = scaleX;
+            if (scaleY < scaleX)
+            {
+                scale = scaleY;
+            }
+        }
+
+        public Rectangle scaleParticle(float xPos, float yPos, float size)
+        {
+            int vSize = (int)(size * scale);
+
+            Vector2 smokeVector = scaleVector(xPos, yPos);
+
+            return new Rectangle((int)smokeVector.X, (int)smokeVector.Y, vSize, vSize);
+        }
+
+        public Vector2 scaleVector(float xPos, float yPos)
+        {
+            float X = (xPos * scale);
+            float Y = (yPos * scale);
+
+            return new Vector2(X, Y);
         }
 
         public void Update(Vector2 position, int xOffset, int yOffset)

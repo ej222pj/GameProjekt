@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace GameProjekt.Content.Model
 {
@@ -39,6 +40,7 @@ namespace GameProjekt.Content.Model
         private bool isConnected;
         private int tileSize;
         private bool hitTopOfMap;
+        private bool playerIsDead;
         private float angleStep = -0.04f;
         float speedY = 4f;
         float speedX = 0.1f;
@@ -52,6 +54,11 @@ namespace GameProjekt.Content.Model
         public bool ShootLine
         {
             get { return playerShootLine; }
+        }
+
+        public bool GetPlayerIsDead 
+        {
+            get { return playerIsDead; }
         }
 
         public bool HitTopOfMap
@@ -350,8 +357,15 @@ namespace GameProjekt.Content.Model
                 || rectangle.TouchRightOf(newRectangle)
                 || rectangle.TouchBottomOf(newRectangle))
             {
-                ResetGame();
+                PlayerIsDead();
             }
+        }
+
+        private void PlayerIsDead()
+        {
+            playerIsDead = true;
+            velocity.Y = 0.0f;
+            velocity.X = 0.0f;
         }
 
         public void BorderCollision(Rectangle newRectangle)
@@ -365,11 +379,11 @@ namespace GameProjekt.Content.Model
             }
             if (rectangle.TouchLeftOf(newRectangle))//Höger sidan av skärmen
             {
-                ResetGame();
+                PlayerIsDead();
             }
             if (rectangle.TouchRightOf(newRectangle))//Vänster sida av skärmen
             {
-                ResetGame();
+                PlayerIsDead();
             }
             if (rectangle.TouchBottomOf(newRectangle))//Längst upp på skärmen
             {   //Ska vinna banan
@@ -410,6 +424,7 @@ namespace GameProjekt.Content.Model
             underCenter = false;
             isConnected = false;
             hitTopOfMap = false;
+            playerIsDead = false;
             angleStep = -0.04f;
             speedY = 4f;
             speedX = 0.1f;
