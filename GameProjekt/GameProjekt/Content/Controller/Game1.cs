@@ -19,7 +19,7 @@ namespace GameProjekt.Content.Controller
             Options,
             Playing,
             WinLevelScreen,
-            QuitPause,
+            Pause,
         }
         GameState CurrentGameState = GameState.MainMenu;
 
@@ -30,9 +30,10 @@ namespace GameProjekt.Content.Controller
         Button btnQuit;
         Button btnNextLevel;
         Button btnMainMenu;
-        int i = 0;
         Map map;
+        DrawMap drawMap;
         Player player;
+        PlayerView playerView;
         DragLine dragLine;
         Camera camera;
         float closestDistance = float.MaxValue;
@@ -66,7 +67,9 @@ namespace GameProjekt.Content.Controller
             // TODO: Add your initialization logic here
             map = new Map();
             dragLine = new DragLine();
-            player = new Player(tileSize, dragLine);
+            player = new Player(tileSize);
+            playerView = new PlayerView();
+            drawMap = new DrawMap();
 
             base.Initialize();
         }
@@ -104,7 +107,8 @@ namespace GameProjekt.Content.Controller
             //string filePath = string.Format(mapFilePath, level + 1);
             //map.Generate(tileSize, filePath);
 
-            player.Load(Content, map);
+            player.Load(map);
+            playerView.Load(Content);
         }
 
         /// <summary>
@@ -130,8 +134,8 @@ namespace GameProjekt.Content.Controller
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape) || Keyboard.GetState().IsKeyDown(Keys.Q))
-                CurrentGameState = GameState.QuitPause;
+            if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape) || Keyboard.GetState().IsKeyDown(Keys.Q)) && CurrentGameState == GameState.Playing)
+                CurrentGameState = GameState.Pause;
 
             MouseState mouse = Mouse.GetState();
 
@@ -139,11 +143,17 @@ namespace GameProjekt.Content.Controller
             switch (CurrentGameState)
             {
                 case GameState.MainMenu:
+                    btnMainMenu.isClicked = false;
                     if (btnPlay.isClicked == true || Keyboard.GetState().IsKeyDown(Keys.Space))
                     {
                         CurrentGameState = GameState.Playing;
                     }
+                    if (btnQuit.isClicked == true)
+                    {
+                        Exit();
+                    }
                     btnPlay.Update(mouse);
+                    btnQuit.Update(mouse);
                     changeLevel = true;
                     break;
 
@@ -151,6 +161,11 @@ namespace GameProjekt.Content.Controller
                     if (btnNextLevel.isClicked == true || Keyboard.GetState().IsKeyDown(Keys.Space))
                     {
                         CurrentGameState = GameState.Playing;
+                    }
+                    if (btnMainMenu.isClicked == true)
+                    {
+                        CurrentGameState = GameState.MainMenu;
+                        System.Threading.Thread.Sleep(300);
                     }
                     btnNextLevel.Update(mouse);
                     btnMainMenu.Update(mouse);
@@ -193,17 +208,19 @@ namespace GameProjekt.Content.Controller
                     
                     break;
 
-                case GameState.QuitPause:
-                    if (btnQuit.isClicked == true)
+                case GameState.Pause:
+                    if (btnMainMenu.isClicked == true)
                     {
-                        Exit();
+                        CurrentGameState = GameState.MainMenu;
+                        System.Threading.Thread.Sleep(300);
                     }
                     if (btnPlay.isClicked == true || Keyboard.GetState().IsKeyDown(Keys.Space))
                     {
                         CurrentGameState = GameState.Playing;
+                        System.Threading.Thread.Sleep(100);
                     }
                     btnPlay.Update(mouse);
-                    btnQuit.Update(mouse);
+                    btnMainMenu.Update(mouse);
                     break;
             }         
             base.Update(gameTime);
@@ -226,6 +243,7 @@ namespace GameProjekt.Content.Controller
                     spriteBatch.Begin();
                     spriteBatch.Draw(Content.Load<Texture2D>("Tiles/Tile1"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
                     btnPlay.Draw(spriteBatch);
+                    btnQuit.Draw(spriteBatch);
                     spriteBatch.End();
                     break;
 
@@ -239,16 +257,14 @@ namespace GameProjekt.Content.Controller
 
                 case GameState.Playing:
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
-                    map.Draw(spriteBatch);
-                    player.Draw(spriteBatch);
+                    drawMap.Draw(spriteBatch, map.CollisionTiles, map.BorderTiles);
+                    playerView.Draw(spriteBatch, player.Position, tileSize);
 
                     
                     if (dragLine.IsConnected) 
                     {
                         dragLine.DrawLine(spriteBatch, dragTexture, connectedTile);
                     }
-                    //else if (player.ShootLine)
-                    //{
                         Vector2? closest = null;
                         //Denna koden kommer ifrån: http://stackoverflow.com/questions/6920238/xna-find-nearest-vector-from-player skriven av User: Cameron 
                         foreach (CollisionTiles position in map.CollisionTiles)
@@ -272,16 +288,18 @@ namespace GameProjekt.Content.Controller
                         {
                             dragLine.DrawLine(spriteBatch, dragTexture, closest.Value);
                         }
-                        //dragLine.DrawLine(spriteBatch, dragTexture, closest.Value);
-                    //}
+                        if (!player.ShootLine) 
+                        {
+                            dragLine.IsConnected = false;
+                        }
                     spriteBatch.End();
                     break;
 
-                case GameState.QuitPause:
+                case GameState.Pause:
                     spriteBatch.Begin();
                     spriteBatch.Draw(Content.Load<Texture2D>("Tiles/pausescreen"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
                     btnPlay.Draw(spriteBatch);
-                    btnQuit.Draw(spriteBatch);
+                    btnMainMenu.Draw(spriteBatch);
                     spriteBatch.End();
                     break;
             }

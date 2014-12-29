@@ -18,14 +18,12 @@ namespace GameProjekt.Content.Model
             thirdLevel,
         }
 
-        private Texture2D texture;
         private Vector2 position;
         private Vector2 velocity;
         Vector2 rotatePosition;
         Vector2 oldPosition;
         private Rectangle rectangle;
         KeyboardState oldState;
-        DragLine dragLine;
         Map map;
 
         private bool hasStarted;
@@ -77,16 +75,14 @@ namespace GameProjekt.Content.Model
             get { return position; }
         }
 
-        public Player(int tileSize, DragLine dragline)
+        public Player(int tileSize)
         {
             selectLevel = SelectLevel.firstLevel;
             this.tileSize = tileSize;
-            dragLine = dragline;
         }
 
-        public void Load(ContentManager Content, Map map)
+        public void Load(Map map)
         {
-            texture = Content.Load<Texture2D>("Tiles/user");
             this.map = map;
         }
 
@@ -102,7 +98,6 @@ namespace GameProjekt.Content.Model
                 {
                     velocity = ReleaseRotation(connectedTile, rotatePosition);
                 }
-                //rectangle = new Rectangle((int)rotatePosition.X, (int)rotatePosition.Y, tileSize, tileSize);
                 position = rotatePosition;
             }
             else if (!isRotating)
@@ -119,8 +114,7 @@ namespace GameProjekt.Content.Model
                 }
                 else
                 {
-                    //rectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
-                    oldPosition = position;
+                    oldPosition = position; //Behövs för att se vilket håll han åker
                 } 
             }
             rectangle = new Rectangle((int)position.X - tileSize / 2, (int)position.Y - tileSize / 2, tileSize, tileSize);
@@ -203,7 +197,6 @@ namespace GameProjekt.Content.Model
             //If line not shot. Its not connected
             if (!playerShootLine)
             {
-                dragLine.IsConnected = false;
             }
         }
 
@@ -384,18 +377,15 @@ namespace GameProjekt.Content.Model
                 {
                     HitTopOfMap = true;
                     selectLevel = SelectLevel.secondLevel;
-                    Console.WriteLine("1");
                 }
                 else if (selectLevel == SelectLevel.secondLevel && !HitTopOfMap)
                 {
                     HitTopOfMap = true;
                     selectLevel = SelectLevel.thirdLevel;
-                    Console.WriteLine("2");
                 }
                 else if (selectLevel == SelectLevel.thirdLevel && !HitTopOfMap)
                 {
                     HitTopOfMap = true;
-                    Console.WriteLine("3");
                     //Man vann
                 }
                 
@@ -423,11 +413,6 @@ namespace GameProjekt.Content.Model
             angleStep = -0.04f;
             speedY = 4f;
             speedX = 0.1f;
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {   
-            spriteBatch.Draw(texture, rectangle, Color.White);
         }
     }
 }

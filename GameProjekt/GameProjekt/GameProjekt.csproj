@@ -38,13 +38,15 @@
     <Compile Include="Content\Model\BorderTiles.cs" />
     <Compile Include="Content\Model\CollisionTiles.cs" />
     <Compile Include="Content\Controller\Game1.cs" />
-    <Compile Include="Content\Model\DragLine.cs" />
+    <Compile Include="Content\View\DragLine.cs" />
     <Compile Include="Content\Model\Map.cs" />
     <Compile Include="Content\Model\Player.cs" />
     <Compile Include="Content\Model\RectangleHelper.cs" />
     <Compile Include="Content\Model\Tiles.cs" />
     <Compile Include="Content\View\Button.cs" />
     <Compile Include="Content\View\Camera.cs" />
+    <Compile Include="Content\View\DrawMap.cs" />
+    <Compile Include="Content\View\PlayerView.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

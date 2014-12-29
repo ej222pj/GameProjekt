@@ -87,10 +87,6 @@ namespace GameProjekt.Content.Model
                     }
                 }
             }
-            else
-            {
-                //throw new FileDoesNotExistException("Input file does not exist");
-            }
         }
 
         private Dictionary<string, int> GetRowAndColumnCounts(string inputFilePath)
@@ -119,15 +115,6 @@ namespace GameProjekt.Content.Model
 
                     rowCount = lineCount;
                 }
-
-                if (rowCount == 0 || columnCount == 0)
-                {
-                    //throw new FileEmptyException("No input data");
-                }
-            }
-            else
-            {
-                //throw new FileDoesNotExistException("Input file does not exist");
             }
 
             Dictionary<string, int> counts = new Dictionary<string, int>();
@@ -136,18 +123,6 @@ namespace GameProjekt.Content.Model
             counts.Add("column_count", columnCount);
 
             return counts;
-        }
-
-        public void Draw(SpriteBatch spriteBatch) 
-        {
-            foreach (CollisionTiles tile in collisionTiles) 
-            {
-                tile.Draw(spriteBatch);
-            }
-            foreach (BorderTiles tile in borderTiles)
-            {
-                tile.Draw(spriteBatch);
-            }
         }
     }
 }

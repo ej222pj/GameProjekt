@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GameProjekt.Content.Model
+namespace GameProjekt.Content.View
 {
     class DragLine
     {
@@ -26,10 +26,10 @@ namespace GameProjekt.Content.Model
 
         public void DrawLine(SpriteBatch spriteBatch, Texture2D texture, Vector2 end)
         {
-            spriteBatch.Draw(texture, position, null, Color.White,
+            spriteBatch.Draw(texture, position, null, Color.Black,
                              (float)Math.Atan2(end.Y - position.Y, end.X - position.X),
                              new Vector2(0f, (float)texture.Height / 2),
-                             new Vector2(Vector2.Distance(position, end), 1.0f),
+                             new Vector2(Vector2.Distance(position, end), 2.0f),
                              SpriteEffects.None, 0f);
 
             IsConnected = true;
