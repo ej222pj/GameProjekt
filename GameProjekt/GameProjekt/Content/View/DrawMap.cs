@@ -9,13 +9,17 @@ namespace GameProjekt.Content.View
 {
     class DrawMap
     {
-        public void Draw(SpriteBatch spriteBatch, List<CollisionTiles> collisionTiles, List<BorderTiles> borderTiles)
+        public void Draw(SpriteBatch spriteBatch, List<CollisionTiles> collisionTiles, List<BorderTiles> borderTiles, List<KillTiles> killTiles)
         {
             foreach (CollisionTiles tile in collisionTiles)
             {
                 tile.Draw(spriteBatch);
             }
             foreach (BorderTiles tile in borderTiles)
+            {
+                tile.Draw(spriteBatch);
+            }
+            foreach (KillTiles tile in killTiles)
             {
                 tile.Draw(spriteBatch);
             }

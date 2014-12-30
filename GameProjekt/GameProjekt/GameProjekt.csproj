@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="Content\Model\BorderTiles.cs" />
     <Compile Include="Content\Model\CollisionTiles.cs" />
+    <Compile Include="Content\Model\KillTiles.cs" />
     <Compile Include="Content\Controller\Game1.cs" />
     <Compile Include="Content\View\DragLine.cs" />
     <Compile Include="Content\Model\Map.cs" />
@@ -47,8 +48,12 @@
     <Compile Include="Content\View\Camera.cs" />
     <Compile Include="Content\View\DrawMap.cs" />
     <Compile Include="Content\View\PlayerView.cs" />
+    <Compile Include="Content\View\PauseView.cs" />
     <Compile Include="Content\View\SplitterParticle.cs" />
     <Compile Include="Content\View\SplitterSystem.cs" />
+    <Compile Include="Content\View\MainMenuView.cs" />
+    <Compile Include="Content\View\QuitView.cs" />
+    <Compile Include="Content\View\WinLevelView.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -12,6 +12,7 @@ namespace GameProjekt.Content.Model
     {
         private List<CollisionTiles> collisionTiles = new List<CollisionTiles>();
         private List<BorderTiles> borderTiles = new List<BorderTiles>();
+        private List<KillTiles> killTiles = new List<KillTiles>();
         List<string> lines = new List<string>();
 
         public List<CollisionTiles> CollisionTiles 
@@ -22,6 +23,11 @@ namespace GameProjekt.Content.Model
         public List<BorderTiles> BorderTiles
         {
             get { return borderTiles; }
+        }
+
+        public List<KillTiles> KillTiles
+        {
+            get { return killTiles; }
         }
 
         private int width, height;
@@ -40,6 +46,8 @@ namespace GameProjekt.Content.Model
                 collisionTiles = new List<CollisionTiles>();
             if(borderTiles != null)
                 borderTiles = new List<BorderTiles>();
+            if (killTiles != null)
+                killTiles = new List<KillTiles>();
             if(lines != null)
                 lines = new List<string>();
 
@@ -68,7 +76,6 @@ namespace GameProjekt.Content.Model
                         for (int j = 0; j < columnCount; j++)
                         {
                             data[i, j] = int.Parse(split[j]);
-                            //int number = data[j, i];
                             if (data[i, j] == 1)
                             {
                                 borderTiles.Add(new BorderTiles(1, new Rectangle(j * size, i * size, size, size)));
@@ -79,7 +86,7 @@ namespace GameProjekt.Content.Model
                             }
                             if (data[i, j] == 3)
                             {
-                                borderTiles.Add(new BorderTiles(3, new Rectangle(j * size, i * size, size, size)));
+                                killTiles.Add(new KillTiles(3, new Rectangle(j * size, i * size, size, size)));
                             }
                             width = (j + 1) * size;
                             height = (i + 1) * size;

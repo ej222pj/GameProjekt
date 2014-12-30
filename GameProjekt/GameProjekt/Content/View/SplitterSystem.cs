@@ -13,9 +13,10 @@ namespace GameProjekt.Content.View
         private SplitterParticle[] particles;
         private int maxPartical = 100;
         private float time = 0;
-        private static float runTime = 3;
-        private static float maxSpeed = 0.4f;
+        private static float runTime = 1.0f;
+        private static float maxSpeed = 200f;
         private Camera camera;
+        private Vector2 position;
 
         public SplitterSystem(Viewport viewPort)
         {
@@ -40,22 +41,19 @@ namespace GameProjekt.Content.View
         }
 
         public void Draw(SpriteBatch spriteBatch, Texture2D splitterTexture, float timeElapsed, Vector2 position)
-        {
+        {                    
             time += timeElapsed;
 
             for (int i = 0; i < maxPartical; i++)
             {
                 particles[i].Update(position, timeElapsed);
             }
-            if (time > runTime)
+            if (time < runTime)
             {
-                time = 0;
-                newSystem();
-            }
-            
-            for (int i = 0; i < maxPartical; i++)
-            {
-                particles[i].Draw(spriteBatch, splitterTexture, camera);
+                for (int i = 0; i < maxPartical; i++)
+                {
+                    particles[i].Draw(spriteBatch, splitterTexture, camera);
+                }
             }
         }
     }

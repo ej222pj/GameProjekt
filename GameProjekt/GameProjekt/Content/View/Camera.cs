@@ -38,21 +38,14 @@ namespace GameProjekt.Content.View
             }
         }
 
-        public Rectangle scaleParticle(float xPos, float yPos, float size)
+        public Rectangle scaleParticle(float xPos, float yPos, float splitterSize)
         {
-            int vSize = (int)(size * scale);
+            int vSize = (int)(splitterSize * scale);
 
-            Vector2 smokeVector = scaleVector(xPos, yPos);
+            int vX = (int)xPos;//(int)(xPos * scale);
+            int vY = (int)yPos;//(int)(yPos * scale);
 
-            return new Rectangle((int)smokeVector.X, (int)smokeVector.Y, vSize, vSize);
-        }
-
-        public Vector2 scaleVector(float xPos, float yPos)
-        {
-            float X = (xPos * scale);
-            float Y = (yPos * scale);
-
-            return new Vector2(X, Y);
+            return new Rectangle(vX, vY, vSize, vSize);
         }
 
         public void Update(Vector2 position, int xOffset, int yOffset)

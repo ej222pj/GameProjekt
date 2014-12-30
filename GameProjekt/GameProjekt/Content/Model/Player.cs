@@ -44,6 +44,8 @@ namespace GameProjekt.Content.Model
         private float angleStep = -0.04f;
         float speedY = 4f;
         float speedX = 0.1f;
+        float timeBeforeUseOfTurn = 3f;
+        float timePassed = 0;
         SelectLevel selectLevel;
 
         public int GetSelectLevel() 
@@ -99,7 +101,6 @@ namespace GameProjekt.Content.Model
             Input(gameTime, position, clostestTile);
             if (isRotating)
             {
-                Console.WriteLine(connectedTile);
                 rotatePosition = Rotate(position, connectedTile);
                 if (playerShootLine)
                 {
@@ -129,15 +130,33 @@ namespace GameProjekt.Content.Model
 
         private void Input(GameTime gametime, Vector2 playerPosition, Vector2 center)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.W) && !hasStarted)
+            timePassed += (float)gametime.ElapsedGameTime.TotalSeconds;
+
+            if (timePassed > timeBeforeUseOfTurn)
             {
-                position.Y -= 0.8f;
-                hasStarted = true;
+
+                if (Keyboard.GetState().IsKeyDown(Keys.A) && hasStarted)
+                {
+                    position.X -= 100.0f;
+                    timePassed = 0;
+                }
+
+                if (Keyboard.GetState().IsKeyDown(Keys.D) && hasStarted)
+                {
+                    position.X += 100.0f;
+                    timePassed = 0;
+                }
+
+                if (Keyboard.GetState().IsKeyDown(Keys.R) && !GetPlayerIsDead)
+                {
+                    ResetGame();
+                }
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.R))
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && !hasStarted)
             {
-                ResetGame();
+                
+                hasStarted = true;
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.S))
@@ -146,7 +165,7 @@ namespace GameProjekt.Content.Model
             //Kode for holding down space
             KeyboardState newState = Keyboard.GetState();
             // Is the SPACE key down?
-            if (newState.IsKeyDown(Keys.Space) && hasStarted == true)
+            if (newState.IsKeyDown(Keys.Space) && hasStarted == true && !GetPlayerIsDead)
             {
                 if (!oldState.IsKeyDown(Keys.Space))
                 {
@@ -201,10 +220,6 @@ namespace GameProjekt.Content.Model
             }
             // Update saved state.
             oldState = newState;
-            //If line not shot. Its not connected
-            if (!playerShootLine)
-            {
-            }
         }
 
         public Vector2 Rotate(Vector2 currentPos, Vector2 centre)
@@ -352,10 +367,20 @@ namespace GameProjekt.Content.Model
 
         public void Collision(Rectangle newRectangle)
         {
+            RectangleCollide(newRectangle);
+        }
+
+        public void KillTileCollision(Rectangle newRectangle)
+        {
+            RectangleCollide(newRectangle);
+        }
+
+        public void RectangleCollide(Rectangle newRectangle)
+        {
             if (rectangle.TouchTopOf(newRectangle)
-                || rectangle.TouchLeftOf(newRectangle)
-                || rectangle.TouchRightOf(newRectangle)
-                || rectangle.TouchBottomOf(newRectangle))
+                  || rectangle.TouchLeftOf(newRectangle)
+                  || rectangle.TouchRightOf(newRectangle)
+                  || rectangle.TouchBottomOf(newRectangle))
             {
                 PlayerIsDead();
             }
@@ -366,16 +391,20 @@ namespace GameProjekt.Content.Model
             playerIsDead = true;
             velocity.Y = 0.0f;
             velocity.X = 0.0f;
+            isRotating = false;
         }
 
         public void BorderCollision(Rectangle newRectangle)
         {
-            if (rectangle.TouchTopOf(newRectangle))//Längst ner på skärmen
+            if (rectangle.TouchTopOf(newRectangle) && !hasStarted)//Längst ner på skärmen
             {
                 rectangle.Y = newRectangle.Y - rectangle.Height;
                 velocity.Y = 0.0f;
-                //velocity.X = 0.0f;
                 hasStarted = false;
+            }
+            if (rectangle.TouchTopOf(newRectangle) && hasStarted)//Längst ner på skärmen
+            {
+                PlayerIsDead();
             }
             if (rectangle.TouchLeftOf(newRectangle))//Höger sidan av skärmen
             {
