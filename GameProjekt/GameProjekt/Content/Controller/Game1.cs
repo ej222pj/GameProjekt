@@ -35,6 +35,7 @@ namespace GameProjekt.Content.Controller
         Map map;
         DrawMap drawMap;
         Player player;
+        Level level;
         PlayerView playerView;
         DragLine dragLine;
         Camera camera;
@@ -75,14 +76,16 @@ namespace GameProjekt.Content.Controller
         {
             // TODO: Add your initialization logic here
             map = new Map();
+            level = new Level();
             dragLine = new DragLine();
-            player = new Player(tileSize);
+            player = new Player(tileSize, level);
             playerView = new PlayerView();
             drawMap = new DrawMap();
             winLevelView = new WinLevelView();
             mainMenuView = new MainMenuView();
             pauseView = new PauseView();
             quitView = new QuitView();
+            
             
 
             base.Initialize();
@@ -138,7 +141,7 @@ namespace GameProjekt.Content.Controller
         private void generateMap() 
         {
             string mapFilePath = "./Content/Maps/Map{0}.txt";
-            string filePath = string.Format(mapFilePath, player.GetSelectLevel());
+            string filePath = string.Format(mapFilePath, level.GetSelectLevelHashCode());
             map.Generate(tileSize, filePath); 
         }
 
@@ -224,9 +227,12 @@ namespace GameProjekt.Content.Controller
                         camera.Update(player.Position, map.Width, map.Height);
                     }
 
-                    foreach (KillTiles tile in map.KillTiles)
+                    if (level.GetSelectLevelHashCode() > 1)
                     {
-                        player.KillTileCollision(tile.Rectangle);
+                        foreach (KillTiles tile in map.KillTiles)
+                        {
+                            player.KillTileCollision(tile.Rectangle);
+                        }
                     }
                     
                     break;

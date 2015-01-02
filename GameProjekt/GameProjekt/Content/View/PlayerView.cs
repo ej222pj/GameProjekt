@@ -18,7 +18,7 @@ namespace GameProjekt.Content.View
 
         internal void Draw(SpriteBatch spriteBatch, Vector2 position, int tileSize)
         {
-            spriteBatch.Draw(texture,  new Rectangle((int)position.X - tileSize / 2, (int)position.Y - tileSize / 2, tileSize, tileSize), Color.White);
+            spriteBatch.Draw(texture,  new Rectangle((int)position.X - tileSize / 2, (int)position.Y - tileSize / 2, tileSize, tileSize ), Color.White);
         }
     }
 }

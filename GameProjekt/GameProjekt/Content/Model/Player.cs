@@ -12,12 +12,7 @@ namespace GameProjekt.Content.Model
 {
     class Player
     {
-        enum SelectLevel
-        {
-            firstLevel,
-            secondLevel,
-            thirdLevel,
-        }
+        
 
         private Vector2 position;
         private Vector2 velocity;
@@ -26,6 +21,7 @@ namespace GameProjekt.Content.Model
         private Rectangle rectangle;
         KeyboardState oldState;
         Map map;
+        Level level;
 
         private bool hasStarted;
         private bool playerShootLine;
@@ -46,12 +42,6 @@ namespace GameProjekt.Content.Model
         float speedX = 0.1f;
         float timeBeforeUseOfTurn = 3f;
         float timePassed = 0;
-        SelectLevel selectLevel;
-
-        public int GetSelectLevel() 
-        {
-            return selectLevel.GetHashCode() + 1;
-        }
 
         public bool ShootLine
         {
@@ -84,9 +74,9 @@ namespace GameProjekt.Content.Model
             get { return position; }
         }
 
-        public Player(int tileSize)
+        public Player(int tileSize, Level level)
         {
-            selectLevel = SelectLevel.firstLevel;
+            this.level = level;
             this.tileSize = tileSize;
         }
 
@@ -416,17 +406,17 @@ namespace GameProjekt.Content.Model
             }
             if (rectangle.TouchBottomOf(newRectangle))//Längst upp på skärmen
             {   //Ska vinna banan
-                if (selectLevel == SelectLevel.firstLevel && !HitTopOfMap) 
+                if (level.GetSelectedLevel() == SelectLevel.firstLevel && !HitTopOfMap) 
                 {
                     HitTopOfMap = true;
-                    selectLevel = SelectLevel.secondLevel;
+                    level.SetSelectLevel(SelectLevel.secondLevel);
                 }
-                else if (selectLevel == SelectLevel.secondLevel && !HitTopOfMap)
+                else if (level.GetSelectedLevel() == SelectLevel.secondLevel && !HitTopOfMap)
                 {
                     HitTopOfMap = true;
-                    selectLevel = SelectLevel.thirdLevel;
+                    level.SetSelectLevel(SelectLevel.thirdLevel);
                 }
-                else if (selectLevel == SelectLevel.thirdLevel && !HitTopOfMap)
+                else if (level.GetSelectedLevel() == SelectLevel.thirdLevel && !HitTopOfMap)
                 {
                     HitTopOfMap = true;
                     //Man vann
