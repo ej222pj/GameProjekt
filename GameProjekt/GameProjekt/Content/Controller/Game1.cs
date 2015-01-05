@@ -1,10 +1,13 @@
 ﻿using GameProjekt.Content.Model;
 using GameProjekt.Content.View;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 
 namespace GameProjekt.Content.Controller
@@ -22,6 +25,7 @@ namespace GameProjekt.Content.Controller
             WinLevel,
             Pause,
             Dead,
+            GameWon,
         }
         GameState CurrentGameState = GameState.MainMenu;
 
@@ -42,7 +46,7 @@ namespace GameProjekt.Content.Controller
         WinLevelView winLevelView;
         MainMenuView mainMenuView;
         PauseView pauseView;
-        QuitView quitView;
+        GameWonView gameWonView;
 
         SplitterSystem splitterSystem;
         float closestDistance = float.MaxValue;
@@ -55,6 +59,9 @@ namespace GameProjekt.Content.Controller
         Texture2D dragTexture;
         Texture2D background;
         Texture2D splitterTexture;
+        SoundEffect gameMusic;
+        Song music;
+        
 
         public Game1()
             : base()
@@ -84,7 +91,7 @@ namespace GameProjekt.Content.Controller
             winLevelView = new WinLevelView();
             mainMenuView = new MainMenuView();
             pauseView = new PauseView();
-            quitView = new QuitView();
+            gameWonView = new GameWonView();
             
             
 
@@ -97,6 +104,9 @@ namespace GameProjekt.Content.Controller
         /// </summary>
         protected override void LoadContent()
         {
+            //gameMusic = Content.Load<SoundEffect>("musicc");
+
+            //MediaPlayer.Play(gameMusic); //provar att spela upp den direkt
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             btnPlay = new Button(Content.Load<Texture2D>("Tiles/start"), graphics.GraphicsDevice);
@@ -141,7 +151,7 @@ namespace GameProjekt.Content.Controller
         private void generateMap() 
         {
             string mapFilePath = "./Content/Maps/Map{0}.txt";
-            string filePath = string.Format(mapFilePath, 3);//level.GetSelectLevelHashCode());
+            string filePath = string.Format(mapFilePath, level.GetSelectLevelHashCode());
             map.Generate(tileSize, filePath); 
         }
 
@@ -191,6 +201,14 @@ namespace GameProjekt.Content.Controller
                     break;
 
                 case GameState.Playing:
+                    //using (var stream = TitleContainer.OpenStream(Path.Combine(Content.RootDirectory, "music.wav")))
+                    //{
+                    //    gameMusic = SoundEffect.FromStream(stream);
+                    //}
+                    //gameMusic = Content.Load<SoundEffect>(@"music.wav");
+                    //gameMusic.Play();
+                    MediaPlayer.Volume = 1.0f;
+                    MediaPlayer.Play(music);
                     if (changeLevel || player.HitTopOfMap)
                     {
                         splitterSystem = new SplitterSystem(GraphicsDevice.Viewport);
@@ -206,6 +224,7 @@ namespace GameProjekt.Content.Controller
                     }
 
                     btnPlay.isClicked = false;
+                    btnNextLevel.isClicked = false;
                     player.Update(gameTime, closestTile, connectedTile);
                     dragLine.Update(player.Position);
                     foreach (CollisionTiles tile in map.CollisionTiles)
@@ -219,8 +238,13 @@ namespace GameProjekt.Content.Controller
                         player.BorderCollision(tile.Rectangle);
                         if (player.HitTopOfMap)
                         {
-                            player.ResetGame();
                             CurrentGameState = GameState.WinLevel;
+                            if (player.GameIsWon)
+                            {
+                                CurrentGameState = GameState.GameWon;
+                            }
+                            player.ResetGame();
+                            
                             break;
                         }
 
@@ -254,18 +278,13 @@ namespace GameProjekt.Content.Controller
                     btnMainMenu.Update(mouse);
                     break;
 
-                case GameState.Dead:
+                case GameState.GameWon:
+                    Console.WriteLine("Hej");
                     if (btnMainMenu.isClicked == true)
                     {
                         CurrentGameState = GameState.MainMenu;
                         System.Threading.Thread.Sleep(300);
                     }
-                    if (btnPlay.isClicked == true || Keyboard.GetState().IsKeyDown(Keys.Space))
-                    {
-                        CurrentGameState = GameState.Playing;
-                        System.Threading.Thread.Sleep(100);
-                    }
-                    btnPlay.Update(mouse);
                     btnMainMenu.Update(mouse);
                     break;
             }         
@@ -347,8 +366,8 @@ namespace GameProjekt.Content.Controller
                     pauseView.Draw(spriteBatch, btnPlay, btnMainMenu, Content, graphics);
                     break;
 
-                case GameState.Dead:
-                    quitView.Draw(spriteBatch, btnPlay, btnMainMenu, Content, graphics);
+                case GameState.GameWon:
+                    gameWonView.Draw(spriteBatch, btnMainMenu, Content, graphics);
                     break;
             }
             base.Draw(gameTime);

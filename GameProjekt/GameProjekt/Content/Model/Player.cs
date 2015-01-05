@@ -24,6 +24,7 @@ namespace GameProjekt.Content.Model
         Level level;
 
         private bool hasStarted;
+        private bool gameIsWon;
         private bool playerShootLine;
         private bool isRotating;
         private bool rightDirectionMovment;
@@ -38,17 +39,23 @@ namespace GameProjekt.Content.Model
         private bool hitTopOfMap;
         private bool playerIsDead;
         private bool jumpActivated;
-        private float angleStep = -0.04f;
-        float speedY = 4f;
-        float speedX = 0.1f;
-        float timeBeforeUseOfTurn = 3f;
-        float timeInTheAir = 0.5f;
-        float timePassed = 0;
-        float jumpTimePassed = 0;
+        private float angleStep;
+        float speedY;
+        float speedX;
+        float timeBeforeUseOfTurn;
+        float timeInTheAir;
+        float timePassed;
+        float jumpTimePassed;
 
         public bool ShootLine
         {
             get { return playerShootLine; }
+        }
+
+        public bool GameIsWon 
+        {
+            get { return gameIsWon; }
+            set { gameIsWon = value; }
         }
 
         public bool GetPlayerIsDead 
@@ -95,6 +102,9 @@ namespace GameProjekt.Content.Model
 
         public void Update(GameTime gameTime, Vector2 clostestTile, Vector2 connectedTile)
         {
+
+            Console.WriteLine(angleStep);
+            Console.WriteLine(speedY);
             position += velocity;
             Input(gameTime, position, clostestTile);
             if (isRotating)
@@ -132,25 +142,25 @@ namespace GameProjekt.Content.Model
 
             if (timePassed > timeBeforeUseOfTurn)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.A) && hasStarted && !playerIsDead)
+                if (Keyboard.GetState().IsKeyDown(Keys.A) && hasStarted && !GetPlayerIsDead)
                 {
                     position.X -= 100.0f;
                     timePassed = 0;
                 }
 
-                if (Keyboard.GetState().IsKeyDown(Keys.D) && hasStarted && !playerIsDead)
+                if (Keyboard.GetState().IsKeyDown(Keys.D) && hasStarted && !GetPlayerIsDead)
                 {
                     position.X += 100.0f;
                     timePassed = 0;
                 }
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.R) && !playerIsDead)
+            if (Keyboard.GetState().IsKeyDown(Keys.R) && !GetPlayerIsDead)
             {
                 ResetGame();
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.LeftControl) && !playerIsDead)
+            if (Keyboard.GetState().IsKeyDown(Keys.LeftControl) && !GetPlayerIsDead && !isRotating)
             {
                 jumpActivated = true;
             }
@@ -177,7 +187,7 @@ namespace GameProjekt.Content.Model
             //Kode for holding down space
             KeyboardState newState = Keyboard.GetState();
             // Is the SPACE key down?
-            if (newState.IsKeyDown(Keys.Space) && hasStarted == true && !GetPlayerIsDead)
+            if (newState.IsKeyDown(Keys.Space) && hasStarted == true && !GetPlayerIsDead && !jumpActivated)
             {
                 if (!oldState.IsKeyDown(Keys.Space))
                 {
@@ -233,7 +243,6 @@ namespace GameProjekt.Content.Model
             // Update saved state.
             oldState = newState;
         }
-
         public Vector2 Rotate(Vector2 currentPos, Vector2 centre)
         {       
             if (overCenter && RightOfCenter && rightDirectionMovment && !upMovement)//Om user är över till höger om centrum, rör sig höger neråt
@@ -436,25 +445,25 @@ namespace GameProjekt.Content.Model
             }
             if (rectangle.TouchBottomOf(newRectangle))//Längst upp på skärmen
             {   //Ska vinna banan
-                if (level.GetSelectedLevel() == SelectLevel.firstLevel && !HitTopOfMap) 
+                if (level.GetSelectedLevel() == SelectLevel.tutorial && !HitTopOfMap) 
                 {
-                    HitTopOfMap = true;
-                    level.SetSelectLevel(SelectLevel.secondLevel);
+                    level.ChangeMap();
+                }
+                else if (level.GetSelectedLevel() == SelectLevel.firstLevel && !HitTopOfMap) 
+                {
+                    level.ChangeMap();
                 }
                 else if (level.GetSelectedLevel() == SelectLevel.secondLevel && !HitTopOfMap)
                 {
-                    HitTopOfMap = true;
-                    level.SetSelectLevel(SelectLevel.thirdLevel);
+                    level.ChangeMap();
                 }
                 else if (level.GetSelectedLevel() == SelectLevel.thirdLevel && !HitTopOfMap)
                 {
-                    HitTopOfMap = true;
-                    //Man vann
+                    GameIsWon = true;
                 }
-                
+                HitTopOfMap = true;
             }
         }
-
         public void ResetGame()
         {
             position = new Vector2(map.Width / 2, map.Height - tileSize * 2);
@@ -473,12 +482,38 @@ namespace GameProjekt.Content.Model
             underCenter = false;
             isConnected = false;
             hitTopOfMap = false;
+            gameIsWon = false;
             playerIsDead = false;
-            angleStep = -0.04f;
-            speedY = 4f;
-            speedX = 0.1f;
-            jumpActivated = false;
+            timeBeforeUseOfTurn = 2f;
+            timeInTheAir = 0.6f;
+            timePassed = 0;
+            angleStep = -0.02f;
+            speedY = 3f;
+            speedX = 0.02f;
             jumpTimePassed = 0;
+            jumpActivated = false;
+
+            if (level.GetSelectedLevel() == SelectLevel.firstLevel)
+            {
+                angleStep = -0.06f;
+                speedY = 6f;
+                timeInTheAir = 0.5f;
+            }
+
+            if (level.GetSelectedLevel() == SelectLevel.secondLevel) 
+            {
+                angleStep = -0.07f;
+                speedY = 7f;
+                timeInTheAir = 0.4f;
+            }
+
+            if (level.GetSelectedLevel() == SelectLevel.thirdLevel)
+            {
+                angleStep = -0.08f;
+                speedY = 8f;
+                timeInTheAir = 0.3f;
+            }
+
         }
     }
 }

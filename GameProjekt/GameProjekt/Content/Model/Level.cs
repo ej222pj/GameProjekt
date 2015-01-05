@@ -7,6 +7,7 @@ namespace GameProjekt.Content.Model
 {
     enum SelectLevel
     {
+        tutorial,
         firstLevel,
         secondLevel,
         thirdLevel,
@@ -22,7 +23,7 @@ namespace GameProjekt.Content.Model
 
         public int GetSelectLevelHashCode()
         {
-            return selectLevel.GetHashCode() + 1;
+            return selectLevel.GetHashCode();
         }
 
         public void SetSelectLevel(SelectLevel currentLevel) 
@@ -32,7 +33,23 @@ namespace GameProjekt.Content.Model
 
         public Level() 
         {
-            selectLevel = SelectLevel.firstLevel;
+            selectLevel = SelectLevel.tutorial;
+        }
+
+        internal void ChangeMap()
+        {
+            if (GetSelectedLevel() == SelectLevel.tutorial)
+            {
+                SetSelectLevel(SelectLevel.firstLevel);
+            }
+            else if (GetSelectedLevel() == SelectLevel.firstLevel)
+            {
+                SetSelectLevel(SelectLevel.secondLevel);
+            }
+            else if (GetSelectedLevel() == SelectLevel.secondLevel)
+            {
+                SetSelectLevel(SelectLevel.thirdLevel);
+            }
         }
     }
 }
