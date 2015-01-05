@@ -141,7 +141,7 @@ namespace GameProjekt.Content.Controller
         private void generateMap() 
         {
             string mapFilePath = "./Content/Maps/Map{0}.txt";
-            string filePath = string.Format(mapFilePath, level.GetSelectLevelHashCode());
+            string filePath = string.Format(mapFilePath, 3);//level.GetSelectLevelHashCode());
             map.Generate(tileSize, filePath); 
         }
 
@@ -227,12 +227,14 @@ namespace GameProjekt.Content.Controller
                         camera.Update(player.Position, map.Width, map.Height);
                     }
 
-                    if (level.GetSelectLevelHashCode() > 1)
+                    foreach (KillTiles tile in map.KillTiles)
                     {
-                        foreach (KillTiles tile in map.KillTiles)
-                        {
-                            player.KillTileCollision(tile.Rectangle);
-                        }
+                        player.KillTileCollision(tile.Rectangle);
+                    }
+
+                    foreach (FenceTiles tile in map.FenceTiles)
+                    {
+                        player.FenceTileCollision(tile.Rectangle);
                     }
                     
                     break;
@@ -293,8 +295,8 @@ namespace GameProjekt.Content.Controller
 
                 case GameState.Playing:
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
-                    drawMap.Draw(spriteBatch, map.CollisionTiles, map.BorderTiles, map.KillTiles);
-                    playerView.Draw(spriteBatch, player.Position, tileSize);
+                    drawMap.Draw(spriteBatch, map.CollisionTiles, map.BorderTiles, map.KillTiles, map.FenceTiles);
+                    playerView.Draw(spriteBatch, player.Position, tileSize, player.JumpActivated);
                                                                                                                            
                     if (dragLine.IsConnected) 
                     {

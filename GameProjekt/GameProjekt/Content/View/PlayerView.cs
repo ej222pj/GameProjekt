@@ -16,8 +16,12 @@ namespace GameProjekt.Content.View
             texture = Content.Load<Texture2D>("Tiles/user");
         }
 
-        internal void Draw(SpriteBatch spriteBatch, Vector2 position, int tileSize)
+        internal void Draw(SpriteBatch spriteBatch, Vector2 position, int tileSize, bool jump)
         {
+            if (jump) 
+            {
+                tileSize += 10;
+            }
             spriteBatch.Draw(texture,  new Rectangle((int)position.X - tileSize / 2, (int)position.Y - tileSize / 2, tileSize, tileSize ), Color.White);
         }
     }

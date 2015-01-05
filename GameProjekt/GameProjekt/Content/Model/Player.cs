@@ -37,11 +37,14 @@ namespace GameProjekt.Content.Model
         private int tileSize;
         private bool hitTopOfMap;
         private bool playerIsDead;
+        private bool jumpActivated;
         private float angleStep = -0.04f;
         float speedY = 4f;
         float speedX = 0.1f;
         float timeBeforeUseOfTurn = 3f;
+        float timeInTheAir = 0.5f;
         float timePassed = 0;
+        float jumpTimePassed = 0;
 
         public bool ShootLine
         {
@@ -51,6 +54,11 @@ namespace GameProjekt.Content.Model
         public bool GetPlayerIsDead 
         {
             get { return playerIsDead; }
+        }
+
+        public bool JumpActivated 
+        {
+            get { return jumpActivated; }
         }
 
         public bool HitTopOfMap
@@ -124,24 +132,38 @@ namespace GameProjekt.Content.Model
 
             if (timePassed > timeBeforeUseOfTurn)
             {
-
-                if (Keyboard.GetState().IsKeyDown(Keys.A) && hasStarted)
+                if (Keyboard.GetState().IsKeyDown(Keys.A) && hasStarted && !playerIsDead)
                 {
                     position.X -= 100.0f;
                     timePassed = 0;
                 }
 
-                if (Keyboard.GetState().IsKeyDown(Keys.D) && hasStarted)
+                if (Keyboard.GetState().IsKeyDown(Keys.D) && hasStarted && !playerIsDead)
                 {
                     position.X += 100.0f;
                     timePassed = 0;
                 }
-
-                if (Keyboard.GetState().IsKeyDown(Keys.R) && !GetPlayerIsDead)
-                {
-                    ResetGame();
-                }
             }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.R) && !playerIsDead)
+            {
+                ResetGame();
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.LeftControl) && !playerIsDead)
+            {
+                jumpActivated = true;
+            }
+
+            if (jumpActivated) 
+            {
+                jumpTimePassed += (float)gametime.ElapsedGameTime.TotalSeconds;  
+            }
+            if(jumpTimePassed > timeInTheAir)
+            {
+                jumpActivated = false;
+                jumpTimePassed = 0;
+            } 
 
             if (Keyboard.GetState().IsKeyDown(Keys.W) && !hasStarted)
             {
@@ -365,6 +387,14 @@ namespace GameProjekt.Content.Model
             RectangleCollide(newRectangle);
         }
 
+        public void FenceTileCollision(Rectangle newRectangle)
+        {
+            if (!jumpActivated)
+            {
+                RectangleCollide(newRectangle);
+            }
+        }
+
         public void RectangleCollide(Rectangle newRectangle)
         {
             if (rectangle.TouchTopOf(newRectangle)
@@ -447,6 +477,8 @@ namespace GameProjekt.Content.Model
             angleStep = -0.04f;
             speedY = 4f;
             speedX = 0.1f;
+            jumpActivated = false;
+            jumpTimePassed = 0;
         }
     }
 }

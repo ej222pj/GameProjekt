@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="Content\Model\BorderTiles.cs" />
     <Compile Include="Content\Model\CollisionTiles.cs" />
+    <Compile Include="Content\Model\FenceTiles.cs" />
     <Compile Include="Content\Model\KillTiles.cs" />
     <Compile Include="Content\Controller\Game1.cs" />
     <Compile Include="Content\Model\Level.cs" />
@@ -87,6 +88,9 @@
     <Content Include="Content\Tiles\hook.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Tiles\Kill.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Tiles\LevelComplete.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -114,6 +118,9 @@
     <Content Include="Content\Tiles\start.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Tiles\startscreen.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Tiles\Tile1.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -125,7 +132,6 @@
     </Content>
     <Content Include="Icon.ico" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

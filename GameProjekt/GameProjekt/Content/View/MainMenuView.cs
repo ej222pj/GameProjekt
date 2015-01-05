@@ -13,10 +13,11 @@ namespace GameProjekt.Content.View
         internal void Draw(SpriteBatch spriteBatch, Button btnPlay, Button btnQuit, ContentManager Content, GraphicsDeviceManager graphics)
         {
             spriteBatch.Begin();
-            spriteBatch.Draw(Content.Load<Texture2D>("Tiles/Tile1"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+            spriteBatch.Draw(Content.Load<Texture2D>("Tiles/startscreen"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
             btnPlay.Draw(spriteBatch);
             btnQuit.Draw(spriteBatch);
             spriteBatch.End();
+
         }
     }
 }

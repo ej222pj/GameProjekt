@@ -7,11 +7,11 @@ using System.Text;
 
 namespace GameProjekt.Content.Model
 {
-    class KillTiles : Tiles
+    class FenceTiles : Tiles
     {
-        public KillTiles(int i, Rectangle newRectangle) 
+        public FenceTiles(int i, Rectangle newRectangle) 
         {
-            texture = Content.Load<Texture2D>("Tiles/Kill");
+            texture = Content.Load<Texture2D>("Tiles/Pixel");
             this.Rectangle = newRectangle;
         }
     }

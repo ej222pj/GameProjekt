@@ -5,11 +5,6 @@ VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameProjekt", "GameProjekt\GameProjekt.csproj", "{25D63F67-7035-453F-9682-7C38F1687FD7}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4870A3F0-DF91-4B38-819B-4AA2EC7BF49B}"
-	ProjectSection(SolutionItems) = preProject
-		TextFile1.spritefont = TextFile1.spritefont
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
