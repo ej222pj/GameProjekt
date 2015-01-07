@@ -28,7 +28,7 @@ namespace GameProjekt.Content.View
         public void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont, Button btnMainMenu, ContentManager Content) 
         {
             spriteBatch.Begin();
-            spriteBatch.Draw(Content.Load<Texture2D>("Tiles/LevelComplete"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+            spriteBatch.Draw(Content.Load<Texture2D>("Tiles/instructionview"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
             btnMainMenu.Draw(spriteBatch);
 
             spriteBatch.DrawString(spriteFont, "*Win map by reaching the top! \n*Spin around RED tiles using SPACEBAR! \n*Avoid GREEN tiles by using A or D button \n" +

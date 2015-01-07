@@ -99,6 +99,12 @@
     <Content Include="Content\Tiles\hook.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Tiles\instructions.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Tiles\instructionview.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Tiles\Kill.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

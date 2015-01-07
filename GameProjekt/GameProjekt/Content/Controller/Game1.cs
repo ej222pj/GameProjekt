@@ -153,7 +153,7 @@ namespace GameProjekt.Content.Controller
             btnMainMenu = new Button(Content.Load<Texture2D>("Tiles/mainmenu"), graphics.GraphicsDevice);
             btnMainMenu.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 0.8f));
 
-            btnInstructions = new Button(Content.Load<Texture2D>("Tiles/mainmenu")/*Add instructions*/, graphics.GraphicsDevice);
+            btnInstructions = new Button(Content.Load<Texture2D>("Tiles/instructions"), graphics.GraphicsDevice);
             btnInstructions.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 0.7f));
         }
 

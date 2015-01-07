@@ -49,3 +49,5 @@ C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\D
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\music.mp3
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\musicc.wav
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\MyFont.xnb
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\instructions.png
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\instructionview.png
