@@ -144,13 +144,13 @@ namespace GameProjekt.Content.Model
 
             if (timePassed > timeBeforeUseOfTurn)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.A) && hasStarted && !GetPlayerIsDead)
+                if (Keyboard.GetState().IsKeyDown(Keys.A) && hasStarted && !GetPlayerIsDead && !isRotating)
                 {
                     position.X -= 100.0f;
                     timePassed = 0;
                 }
 
-                if (Keyboard.GetState().IsKeyDown(Keys.D) && hasStarted && !GetPlayerIsDead)
+                if (Keyboard.GetState().IsKeyDown(Keys.D) && hasStarted && !GetPlayerIsDead && !isRotating)
                 {
                     position.X += 100.0f;
                     timePassed = 0;
