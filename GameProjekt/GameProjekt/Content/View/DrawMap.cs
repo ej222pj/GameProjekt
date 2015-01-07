@@ -23,7 +23,6 @@ namespace GameProjekt.Content.View
             {
                 tile.Draw(spriteBatch);
             }
-
             foreach (FenceTiles tile in fenceTiles)
             {
                 tile.Draw(spriteBatch);

@@ -7,10 +7,10 @@ namespace GameProjekt.Content.Model
 {
     enum SelectLevel
     {
-        tutorial,
-        firstLevel,
-        secondLevel,
-        thirdLevel,
+        Tutorial,
+        FirstLevel,
+        SecondLevel,
+        ThirdLevel,
     }
     class Level
     {
@@ -33,22 +33,22 @@ namespace GameProjekt.Content.Model
 
         public Level() 
         {
-            selectLevel = SelectLevel.tutorial;
+            selectLevel = SelectLevel.Tutorial;
         }
 
         internal void ChangeMap()
         {
-            if (GetSelectedLevel() == SelectLevel.tutorial)
+            if (GetSelectedLevel() == SelectLevel.Tutorial)
             {
-                SetSelectLevel(SelectLevel.firstLevel);
+                SetSelectLevel(SelectLevel.FirstLevel);
             }
-            else if (GetSelectedLevel() == SelectLevel.firstLevel)
+            else if (GetSelectedLevel() == SelectLevel.FirstLevel)
             {
-                SetSelectLevel(SelectLevel.secondLevel);
+                SetSelectLevel(SelectLevel.SecondLevel);
             }
-            else if (GetSelectedLevel() == SelectLevel.secondLevel)
+            else if (GetSelectedLevel() == SelectLevel.SecondLevel)
             {
-                SetSelectLevel(SelectLevel.thirdLevel);
+                SetSelectLevel(SelectLevel.ThirdLevel);
             }
         }
     }

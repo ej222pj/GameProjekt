@@ -26,6 +26,7 @@ namespace GameProjekt.Content.Controller
             Pause,
             Dead,
             GameWon,
+            Instructions,
         }
         GameState CurrentGameState = GameState.MainMenu;
 
@@ -36,6 +37,7 @@ namespace GameProjekt.Content.Controller
         Button btnQuit;
         Button btnNextLevel;
         Button btnMainMenu;
+        Button btnInstructions;
         Map map;
         DrawMap drawMap;
         Player player;
@@ -47,6 +49,9 @@ namespace GameProjekt.Content.Controller
         MainMenuView mainMenuView;
         PauseView pauseView;
         GameWonView gameWonView;
+        InstructionView instructionView;
+        ScreenInfo screenInfo;
+        SpriteFont spriteFont;
 
         SplitterSystem splitterSystem;
         float closestDistance = float.MaxValue;
@@ -92,6 +97,8 @@ namespace GameProjekt.Content.Controller
             mainMenuView = new MainMenuView();
             pauseView = new PauseView();
             gameWonView = new GameWonView();
+            instructionView = new InstructionView(graphics);
+            screenInfo = new ScreenInfo();
             
             
 
@@ -109,17 +116,10 @@ namespace GameProjekt.Content.Controller
             //MediaPlayer.Play(gameMusic); //provar att spela upp den direkt
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            btnPlay = new Button(Content.Load<Texture2D>("Tiles/start"), graphics.GraphicsDevice);
-            btnPlay.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 1.5f));
 
-            btnQuit = new Button(Content.Load<Texture2D>("Tiles/quit"), graphics.GraphicsDevice);
-            btnQuit.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 1.1f));
+            loadButtons();
 
-            btnNextLevel = new Button(Content.Load<Texture2D>("Tiles/nextlevel"), graphics.GraphicsDevice);
-            btnNextLevel.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 1.5f));
-
-            btnMainMenu = new Button(Content.Load<Texture2D>("Tiles/mainmenu"), graphics.GraphicsDevice);
-            btnMainMenu.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 1.1f));
+            spriteFont = Content.Load<SpriteFont>("MyFont");
 
             dragTexture = Content.Load<Texture2D>("Tiles/pixel");
             background = Content.Load<Texture2D>("Tiles/Background");
@@ -137,6 +137,24 @@ namespace GameProjekt.Content.Controller
 
             player.Load(map);
             playerView.Load(Content);
+        }
+
+        public void loadButtons() 
+        {
+            btnPlay = new Button(Content.Load<Texture2D>("Tiles/start"), graphics.GraphicsDevice);
+            btnPlay.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 1.5f));
+
+            btnQuit = new Button(Content.Load<Texture2D>("Tiles/quit"), graphics.GraphicsDevice);
+            btnQuit.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 1.1f));
+
+            btnNextLevel = new Button(Content.Load<Texture2D>("Tiles/nextlevel"), graphics.GraphicsDevice);
+            btnNextLevel.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 1.5f));
+
+            btnMainMenu = new Button(Content.Load<Texture2D>("Tiles/mainmenu"), graphics.GraphicsDevice);
+            btnMainMenu.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 0.8f));
+
+            btnInstructions = new Button(Content.Load<Texture2D>("Tiles/mainmenu")/*Add instructions*/, graphics.GraphicsDevice);
+            btnInstructions.setPosition(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 0.7f));
         }
 
         /// <summary>
@@ -180,8 +198,13 @@ namespace GameProjekt.Content.Controller
                     {
                         Exit();
                     }
+                    if (btnInstructions.isClicked == true)
+                    {
+                        CurrentGameState = GameState.Instructions;
+                    }
                     btnPlay.Update(mouse);
                     btnQuit.Update(mouse);
+                    btnInstructions.Update(mouse);
                     changeLevel = true;
                     break;
 
@@ -207,8 +230,8 @@ namespace GameProjekt.Content.Controller
                     //}
                     //gameMusic = Content.Load<SoundEffect>(@"music.wav");
                     //gameMusic.Play();
-                    MediaPlayer.Volume = 1.0f;
-                    MediaPlayer.Play(music);
+                    //MediaPlayer.Volume = 1.0f;
+                    //MediaPlayer.Play(music);
                     if (changeLevel || player.HitTopOfMap)
                     {
                         splitterSystem = new SplitterSystem(GraphicsDevice.Viewport);
@@ -274,12 +297,25 @@ namespace GameProjekt.Content.Controller
                         CurrentGameState = GameState.Playing;
                         System.Threading.Thread.Sleep(100);
                     }
+                    if (btnInstructions.isClicked == true)
+                    {
+                        CurrentGameState = GameState.Instructions;
+                    }
                     btnPlay.Update(mouse);
+                    btnMainMenu.Update(mouse);
+                    btnInstructions.Update(mouse);
+                    break;
+
+                case GameState.Instructions:
+                    if (btnMainMenu.isClicked == true)
+                    {
+                        CurrentGameState = GameState.MainMenu;
+                        System.Threading.Thread.Sleep(300);
+                    }
                     btnMainMenu.Update(mouse);
                     break;
 
                 case GameState.GameWon:
-                    Console.WriteLine("Hej");
                     if (btnMainMenu.isClicked == true)
                     {
                         CurrentGameState = GameState.MainMenu;
@@ -305,7 +341,7 @@ namespace GameProjekt.Content.Controller
             switch (CurrentGameState)
             {
                 case GameState.MainMenu:
-                    mainMenuView.Draw(spriteBatch, btnPlay, btnQuit, Content, graphics);
+                    mainMenuView.Draw(spriteBatch, btnPlay, btnQuit, btnInstructions, Content, graphics);
                     break;
 
                 case GameState.WinLevel:
@@ -316,9 +352,10 @@ namespace GameProjekt.Content.Controller
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
                     drawMap.Draw(spriteBatch, map.CollisionTiles, map.BorderTiles, map.KillTiles, map.FenceTiles);
                     playerView.Draw(spriteBatch, player.Position, tileSize, player.JumpActivated);
-                                                                                                                           
+                    int timePassed = (int)player.TimePassed;
+                    screenInfo.Draw(spriteBatch, spriteFont, new Vector2(0, player.Position.Y), timePassed.ToString());                                                                                                 
                     if (dragLine.IsConnected) 
-                    {
+                    {                                
                         dragLine.DrawLine(spriteBatch, dragTexture, connectedTile);
                     }
                         Vector2? closest = null;
@@ -352,7 +389,8 @@ namespace GameProjekt.Content.Controller
                         if (player.GetPlayerIsDead)
                         {
                             splitterSystem.Draw(spriteBatch, splitterTexture, (float)gameTime.ElapsedGameTime.TotalSeconds, player.Position);
-
+                            string deadInfo = "Press ESC to return to Main Menu";
+                            screenInfo.Draw(spriteBatch, spriteFont, new Vector2(graphics.PreferredBackBufferWidth / 2, player.Position.Y - 50), deadInfo);
                             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                             {
                                 player.ResetGame();
@@ -363,7 +401,11 @@ namespace GameProjekt.Content.Controller
                     break;
 
                 case GameState.Pause:
-                    pauseView.Draw(spriteBatch, btnPlay, btnMainMenu, Content, graphics);
+                    pauseView.Draw(spriteBatch, btnPlay, btnMainMenu, btnInstructions, Content, graphics);
+                    break;
+
+                case GameState.Instructions:
+                    instructionView.Draw(spriteBatch, spriteFont, btnMainMenu, Content);
                     break;
 
                 case GameState.GameWon:

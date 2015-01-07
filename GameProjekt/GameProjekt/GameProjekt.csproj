@@ -49,9 +49,11 @@
     <Compile Include="Content\View\Button.cs" />
     <Compile Include="Content\View\Camera.cs" />
     <Compile Include="Content\View\DrawMap.cs" />
+    <Compile Include="Content\View\InstructionView.cs" />
     <Compile Include="Content\View\PlayerView.cs" />
     <Compile Include="Content\View\PauseView.cs" />
     <Compile Include="Content\View\GameWonView.cs" />
+    <Compile Include="Content\View\ScreenInfo.cs" />
     <Compile Include="Content\View\SplitterParticle.cs" />
     <Compile Include="Content\View\SplitterSystem.cs" />
     <Compile Include="Content\View\MainMenuView.cs" />
@@ -143,6 +145,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Content\MyFont.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

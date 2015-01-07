@@ -47,6 +47,11 @@ namespace GameProjekt.Content.Model
         float timePassed;
         float jumpTimePassed;
 
+        public float TimePassed 
+        {
+            get { return timePassed; }
+        }
+
         public bool ShootLine
         {
             get { return playerShootLine; }
@@ -102,9 +107,6 @@ namespace GameProjekt.Content.Model
 
         public void Update(GameTime gameTime, Vector2 clostestTile, Vector2 connectedTile)
         {
-
-            Console.WriteLine(angleStep);
-            Console.WriteLine(speedY);
             position += velocity;
             Input(gameTime, position, clostestTile);
             if (isRotating)
@@ -445,19 +447,19 @@ namespace GameProjekt.Content.Model
             }
             if (rectangle.TouchBottomOf(newRectangle))//Längst upp på skärmen
             {   //Ska vinna banan
-                if (level.GetSelectedLevel() == SelectLevel.tutorial && !HitTopOfMap) 
+                if (level.GetSelectedLevel() == SelectLevel.Tutorial && !HitTopOfMap) 
                 {
                     level.ChangeMap();
                 }
-                else if (level.GetSelectedLevel() == SelectLevel.firstLevel && !HitTopOfMap) 
+                else if (level.GetSelectedLevel() == SelectLevel.FirstLevel && !HitTopOfMap) 
                 {
                     level.ChangeMap();
                 }
-                else if (level.GetSelectedLevel() == SelectLevel.secondLevel && !HitTopOfMap)
+                else if (level.GetSelectedLevel() == SelectLevel.SecondLevel && !HitTopOfMap)
                 {
                     level.ChangeMap();
                 }
-                else if (level.GetSelectedLevel() == SelectLevel.thirdLevel && !HitTopOfMap)
+                else if (level.GetSelectedLevel() == SelectLevel.ThirdLevel && !HitTopOfMap)
                 {
                     GameIsWon = true;
                 }
@@ -493,21 +495,21 @@ namespace GameProjekt.Content.Model
             jumpTimePassed = 0;
             jumpActivated = false;
 
-            if (level.GetSelectedLevel() == SelectLevel.firstLevel)
+            if (level.GetSelectedLevel() == SelectLevel.FirstLevel)
             {
                 angleStep = -0.06f;
                 speedY = 6f;
                 timeInTheAir = 0.5f;
             }
 
-            if (level.GetSelectedLevel() == SelectLevel.secondLevel) 
+            if (level.GetSelectedLevel() == SelectLevel.SecondLevel) 
             {
                 angleStep = -0.07f;
                 speedY = 7f;
                 timeInTheAir = 0.4f;
             }
 
-            if (level.GetSelectedLevel() == SelectLevel.thirdLevel)
+            if (level.GetSelectedLevel() == SelectLevel.ThirdLevel)
             {
                 angleStep = -0.08f;
                 speedY = 8f;
