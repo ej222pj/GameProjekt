@@ -367,7 +367,6 @@ namespace GameProjekt.Content.Controller
                             distance = (float)Math.Sqrt(Math.Pow(player.Position.X - tilePosision.X, 2) + Math.Pow(player.Position.Y - tilePosision.Y, 2));
                             if (!closest.HasValue || distance < closestDistance)
                             {
-                                
                                 closest = tilePosision;
                                 closestDistance = distance;
                                 closestTile = closest.Value;
