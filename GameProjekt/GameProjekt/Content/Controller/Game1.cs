@@ -299,7 +299,8 @@ namespace GameProjekt.Content.Controller
                     if (btnMainMenu.isClicked == true)
                     {
                         CurrentGameState = GameState.MainMenu;
-                        System.Threading.Thread.Sleep(300);
+                        level.SetSelectLevel(SelectLevel.Tutorial);
+                        System.Threading.Thread.Sleep(300);    
                     }
                     btnMainMenu.Update(mouse);
                     break;
