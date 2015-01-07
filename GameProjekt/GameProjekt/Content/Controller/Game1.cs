@@ -64,8 +64,6 @@ namespace GameProjekt.Content.Controller
         Texture2D dragTexture;
         Texture2D background;
         Texture2D splitterTexture;
-        SoundEffect gameMusic;
-        Song music;
         
 
         public Game1()
@@ -99,8 +97,6 @@ namespace GameProjekt.Content.Controller
             gameWonView = new GameWonView();
             instructionView = new InstructionView(graphics);
             screenInfo = new ScreenInfo();
-            
-            
 
             base.Initialize();
         }
@@ -111,9 +107,6 @@ namespace GameProjekt.Content.Controller
         /// </summary>
         protected override void LoadContent()
         {
-            //gameMusic = Content.Load<SoundEffect>("musicc");
-
-            //MediaPlayer.Play(gameMusic); //provar att spela upp den direkt
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -129,11 +122,6 @@ namespace GameProjekt.Content.Controller
             Tiles.Content = Content;
 
             camera = new Camera(GraphicsDevice.Viewport);
-
-            //int level = player.GetSelectLevel().GetHashCode();
-            //string mapFilePath = "./Content/Maps/Map{0}.txt";
-            //string filePath = string.Format(mapFilePath, level + 1);
-            //map.Generate(tileSize, filePath);
 
             player.Load(map);
             playerView.Load(Content);
@@ -224,14 +212,6 @@ namespace GameProjekt.Content.Controller
                     break;
 
                 case GameState.Playing:
-                    //using (var stream = TitleContainer.OpenStream(Path.Combine(Content.RootDirectory, "music.wav")))
-                    //{
-                    //    gameMusic = SoundEffect.FromStream(stream);
-                    //}
-                    //gameMusic = Content.Load<SoundEffect>(@"music.wav");
-                    //gameMusic.Play();
-                    //MediaPlayer.Volume = 1.0f;
-                    //MediaPlayer.Play(music);
                     if (changeLevel || player.HitTopOfMap)
                     {
                         splitterSystem = new SplitterSystem(GraphicsDevice.Viewport);

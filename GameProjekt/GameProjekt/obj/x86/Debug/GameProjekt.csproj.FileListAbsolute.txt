@@ -51,3 +51,7 @@ C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\D
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\MyFont.xnb
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\instructions.png
 C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\Content\Tiles\instructionview.png
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\GameProjekt.exe.manifest
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\bin\Windows\Debug\GameProjekt.application
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\obj\x86\Debug\GameProjekt.exe.manifest
+C:\Users\Eric\Documents\GitHub\GameProjekt\GameProjekt\GameProjekt\obj\x86\Debug\GameProjekt.application
