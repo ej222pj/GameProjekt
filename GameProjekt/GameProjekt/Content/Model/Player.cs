@@ -425,33 +425,18 @@ namespace GameProjekt.Content.Model
             isRotating = false;
         }
 
-        public void BorderCollision(Rectangle newRectangle)
+        public void WinTileCollision(Rectangle newRectangle) 
         {
-            if (rectangle.TouchTopOf(newRectangle) && !hasStarted)//Längst ner på skärmen
-            {
-                rectangle.Y = newRectangle.Y - rectangle.Height;
-                velocity.Y = 0.0f;
-                hasStarted = false;
-            }
-            if (rectangle.TouchTopOf(newRectangle) && hasStarted)//Längst ner på skärmen
-            {
-                PlayerIsDead();
-            }
-            if (rectangle.TouchLeftOf(newRectangle))//Höger sidan av skärmen
-            {
-                PlayerIsDead();
-            }
-            if (rectangle.TouchRightOf(newRectangle))//Vänster sida av skärmen
-            {
-                PlayerIsDead();
-            }
-            if (rectangle.TouchBottomOf(newRectangle))//Längst upp på skärmen
+            if ((rectangle.TouchTopOf(newRectangle)) 
+                || rectangle.TouchLeftOf(newRectangle) 
+                || rectangle.TouchRightOf(newRectangle) 
+                || (rectangle.TouchBottomOf (newRectangle)))
             {   //Ska vinna banan
-                if (level.GetSelectedLevel() == SelectLevel.Tutorial && !HitTopOfMap) 
+                if (level.GetSelectedLevel() == SelectLevel.Tutorial && !HitTopOfMap)
                 {
                     level.ChangeMap();
                 }
-                else if (level.GetSelectedLevel() == SelectLevel.FirstLevel && !HitTopOfMap) 
+                else if (level.GetSelectedLevel() == SelectLevel.FirstLevel && !HitTopOfMap)
                 {
                     level.ChangeMap();
                 }
@@ -464,6 +449,17 @@ namespace GameProjekt.Content.Model
                     GameIsWon = true;
                 }
                 HitTopOfMap = true;
+            }
+        }
+
+        public void BorderCollision(Rectangle newRectangle)
+        {
+            if ((rectangle.TouchTopOf(newRectangle) && hasStarted) 
+                || rectangle.TouchLeftOf(newRectangle) 
+                || rectangle.TouchRightOf(newRectangle) 
+                || (rectangle.TouchBottomOf (newRectangle)))
+            {
+                PlayerIsDead();
             }
         }
         public void ResetGame()

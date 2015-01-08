@@ -43,14 +43,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GameProjekt.exe" size="177152">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GameProjekt.exe" size="178176">
       <assemblyIdentity name="GameProjekt" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>4x+bgkeOQ3aqBIYrmTzle/gt94g=</dsig:DigestValue>
+        <dsig:DigestValue>pnf320wbzzlnc1ADCEb+ePYCROM=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -180,7 +180,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>4nPIGnNNZne6rMkl/x9Sw8DTeXI=</dsig:DigestValue>
+      <dsig:DigestValue>JWfis02AXCa1ZBxbAP2Qs0HEiMs=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content\Maps\Map1.txt" size="8328">
@@ -189,7 +189,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>KJCIh1ufdgUOpo5rnjLHNE6eWF4=</dsig:DigestValue>
+      <dsig:DigestValue>m224I7XsG9HlIgOEDulBrjqE74s=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content\Maps\Map2.txt" size="9602">
@@ -198,7 +198,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>+W6b57UFjUtqeJx1k3RDtZjd1c8=</dsig:DigestValue>
+      <dsig:DigestValue>JLKm/gr312BythTc0pyzNW/qzGE=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content\Maps\Map3.txt" size="11366">
@@ -207,7 +207,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>4OjcetfJ1VEsoYCKnyxQ2r5ix8A=</dsig:DigestValue>
+      <dsig:DigestValue>XMuFlWb+xUTZq6v8KuHD6+ftUtE=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content\music.mp3" size="1098429">

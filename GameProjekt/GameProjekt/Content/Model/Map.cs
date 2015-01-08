@@ -14,6 +14,7 @@ namespace GameProjekt.Content.Model
         private List<BorderTiles> borderTiles = new List<BorderTiles>();
         private List<KillTiles> killTiles = new List<KillTiles>();
         private List<FenceTiles> fenceTiles = new List<FenceTiles>();
+        private List<WinTiles> winTiles = new List<WinTiles>();
         List<string> lines = new List<string>();
 
         public List<CollisionTiles> CollisionTiles 
@@ -34,6 +35,10 @@ namespace GameProjekt.Content.Model
         public List<FenceTiles> FenceTiles
         {
             get { return fenceTiles; }
+        }
+        public List<WinTiles> WinTiles
+        {
+            get { return winTiles; }
         }
 
         private int width, height;
@@ -56,6 +61,8 @@ namespace GameProjekt.Content.Model
                 killTiles = new List<KillTiles>();
             if (fenceTiles != null)
                 fenceTiles = new List<FenceTiles>();
+            if (winTiles != null)
+                winTiles = new List<WinTiles>();
             if(lines != null)
                 lines = new List<string>();
 
@@ -99,6 +106,10 @@ namespace GameProjekt.Content.Model
                             if (data[i, j] == 4)
                             {
                                 fenceTiles.Add(new FenceTiles(3, new Rectangle(j * size, i * size, size, size / 5)));
+                            }
+                            if (data[i, j] == 5)
+                            {
+                                winTiles.Add(new WinTiles(3, new Rectangle(j * size, i * size, size, size)));
                             }
                             width = (j + 1) * size;
                             height = (i + 1) * size;

@@ -230,6 +230,7 @@ namespace GameProjekt.Content.Controller
                     btnNextLevel.isClicked = false;
                     player.Update(gameTime, closestTile, connectedTile);
                     dragLine.Update(player.Position);
+                    camera.Update(player.Position, map.Width, map.Height);
                     foreach (CollisionTiles tile in map.CollisionTiles)
                     {
                         player.Collision(tile.Rectangle);
@@ -239,19 +240,6 @@ namespace GameProjekt.Content.Controller
                     {
                         
                         player.BorderCollision(tile.Rectangle);
-                        if (player.HitTopOfMap)
-                        {
-                            CurrentGameState = GameState.WinLevel;
-                            if (player.GameIsWon)
-                            {
-                                CurrentGameState = GameState.GameWon;
-                            }
-                            player.ResetGame();
-                            
-                            break;
-                        }
-
-                        camera.Update(player.Position, map.Width, map.Height);
                     }
 
                     foreach (KillTiles tile in map.KillTiles)
@@ -262,6 +250,22 @@ namespace GameProjekt.Content.Controller
                     foreach (FenceTiles tile in map.FenceTiles)
                     {
                         player.FenceTileCollision(tile.Rectangle);
+                    }
+
+                    foreach (WinTiles tile in map.WinTiles)
+                    {
+                        player.WinTileCollision(tile.Rectangle);
+                        if (player.HitTopOfMap)
+                        {
+                            CurrentGameState = GameState.WinLevel;
+                            if (player.GameIsWon)
+                            {
+                                CurrentGameState = GameState.GameWon;
+                            }
+                            player.ResetGame();
+
+                            break;
+                        }
                     }
                     
                     break;
@@ -331,7 +335,7 @@ namespace GameProjekt.Content.Controller
 
                 case GameState.Playing:
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
-                    drawMap.Draw(spriteBatch, map.CollisionTiles, map.BorderTiles, map.KillTiles, map.FenceTiles);
+                    drawMap.Draw(spriteBatch, map.CollisionTiles, map.BorderTiles, map.KillTiles, map.FenceTiles, map.WinTiles);
                     playerView.Draw(spriteBatch, player.Position, tileSize, player.JumpActivated);
                     int timePassed = (int)player.TimePassed;
                     screenInfo.Draw(spriteBatch, spriteFont, new Vector2(0, player.Position.Y), timePassed.ToString());                                                                                                 

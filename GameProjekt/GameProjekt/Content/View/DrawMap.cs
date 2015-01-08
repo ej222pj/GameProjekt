@@ -9,7 +9,7 @@ namespace GameProjekt.Content.View
 {
     class DrawMap
     {
-        public void Draw(SpriteBatch spriteBatch, List<CollisionTiles> collisionTiles, List<BorderTiles> borderTiles, List<KillTiles> killTiles, List<FenceTiles> fenceTiles)
+        public void Draw(SpriteBatch spriteBatch, List<CollisionTiles> collisionTiles, List<BorderTiles> borderTiles, List<KillTiles> killTiles, List<FenceTiles> fenceTiles, List<WinTiles> winTiles)
         {
             foreach (CollisionTiles tile in collisionTiles)
             {
@@ -24,6 +24,10 @@ namespace GameProjekt.Content.View
                 tile.Draw(spriteBatch);
             }
             foreach (FenceTiles tile in fenceTiles)
+            {
+                tile.Draw(spriteBatch);
+            }
+            foreach (WinTiles tile in winTiles)
             {
                 tile.Draw(spriteBatch);
             }
