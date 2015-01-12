@@ -38,7 +38,5 @@ namespace GameProjekt.Content.Model
                 && r1.Top <= r2.Bottom - (r2.Width / 4)
                 && r1.Bottom >= r2.Top + (r2.Width / 4));
         }
-
-         
     }
 }

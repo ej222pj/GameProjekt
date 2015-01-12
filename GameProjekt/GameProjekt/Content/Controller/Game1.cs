@@ -255,10 +255,10 @@ namespace GameProjekt.Content.Controller
                     foreach (WinTiles tile in map.WinTiles)
                     {
                         player.WinTileCollision(tile.Rectangle);
-                        if (player.HitTopOfMap)
+                        if (player.HitTopOfMap)//If you win the map
                         {
                             CurrentGameState = GameState.WinLevel;
-                            if (player.GameIsWon)
+                            if (player.GameIsWon)//If it was the last map, you win the game
                             {
                                 CurrentGameState = GameState.GameWon;
                             }

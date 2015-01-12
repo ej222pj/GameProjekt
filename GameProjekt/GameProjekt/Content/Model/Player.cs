@@ -432,15 +432,9 @@ namespace GameProjekt.Content.Model
                 || rectangle.TouchRightOf(newRectangle) 
                 || (rectangle.TouchBottomOf (newRectangle)))
             {   //Ska vinna banan
-                if (level.GetSelectedLevel() == SelectLevel.Tutorial && !HitTopOfMap)
-                {
-                    level.ChangeMap();
-                }
-                else if (level.GetSelectedLevel() == SelectLevel.FirstLevel && !HitTopOfMap)
-                {
-                    level.ChangeMap();
-                }
-                else if (level.GetSelectedLevel() == SelectLevel.SecondLevel && !HitTopOfMap)
+                if ((level.GetSelectedLevel() == SelectLevel.Tutorial && !HitTopOfMap) 
+                    || (level.GetSelectedLevel() == SelectLevel.FirstLevel && !HitTopOfMap) 
+                    || (level.GetSelectedLevel() == SelectLevel.SecondLevel && !HitTopOfMap))
                 {
                     level.ChangeMap();
                 }
