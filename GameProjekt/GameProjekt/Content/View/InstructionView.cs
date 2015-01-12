@@ -31,7 +31,7 @@ namespace GameProjekt.Content.View
             spriteBatch.Draw(Content.Load<Texture2D>("Tiles/instructionview"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
             btnMainMenu.Draw(spriteBatch);
 
-            spriteBatch.DrawString(spriteFont, "*Win map by reaching the top! \n*Spin around RED tiles using SPACEBAR! \n*Avoid GREEN tiles by using A or D button \n" +
+            spriteBatch.DrawString(spriteFont, "*Win map by reaching the top! \n*Press W to start! \n*Spin around RED tiles using SPACEBAR! \n*Avoid GREEN tiles by using A or D button \n" +
             "*Jump FENCES using left CTRL button! \n*A or D can be used once every 2 seconds! \n*You can not spin forever!",position, Color.White);
             spriteBatch.End();
         }
