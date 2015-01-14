@@ -60,6 +60,7 @@ namespace GameProjekt.Content.Controller
         Vector2 connectedTile;
         float distance;
         bool changeLevel = false;
+        int timePassed = 0;
 
         Texture2D dragTexture;
         Texture2D background;
@@ -294,7 +295,6 @@ namespace GameProjekt.Content.Controller
                     if (btnMainMenu.isClicked == true)
                     {
                         CurrentGameState = GameState.MainMenu;
-                        System.Threading.Thread.Sleep(300);
                     }
                     btnMainMenu.Update(mouse);
                     break;
@@ -337,8 +337,13 @@ namespace GameProjekt.Content.Controller
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
                     drawMap.Draw(spriteBatch, map.CollisionTiles, map.BorderTiles, map.KillTiles, map.FenceTiles, map.WinTiles);
                     playerView.Draw(spriteBatch, player.Position, tileSize, player.JumpActivated);
-                    int timePassed = (int)player.TimePassed;
-                    screenInfo.Draw(spriteBatch, spriteFont, new Vector2(0, player.Position.Y), timePassed.ToString());                                                                                                 
+                    
+                    if (!player.GetPlayerIsDead)//Jumpcounter
+                    {
+                        timePassed = (int)player.TimePassed;
+                    }
+                    screenInfo.Draw(spriteBatch, spriteFont, new Vector2(player.Position.X - 35, player.Position.Y), timePassed.ToString());
+
                     if (dragLine.IsConnected) 
                     {                                
                         dragLine.DrawLine(spriteBatch, dragTexture, connectedTile);

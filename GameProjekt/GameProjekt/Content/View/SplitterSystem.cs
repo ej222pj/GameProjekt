@@ -16,7 +16,6 @@ namespace GameProjekt.Content.View
         private static float runTime = 1.0f;
         private static float maxSpeed = 200f;
         private Camera camera;
-        private Vector2 position;
 
         public SplitterSystem(Viewport viewPort)
         {

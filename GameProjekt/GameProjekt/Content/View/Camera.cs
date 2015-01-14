@@ -9,8 +9,6 @@ namespace GameProjekt.Content.View
 {
     class Camera
     {
-        private int width;
-        private int height;
         private float scale;
         private Matrix transform;
         private Vector2 center;
