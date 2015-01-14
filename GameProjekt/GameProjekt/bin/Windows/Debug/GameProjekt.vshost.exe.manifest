@@ -50,7 +50,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>eacxw7YTDMhIyTaxYMKigJkAo68=</dsig:DigestValue>
+        <dsig:DigestValue>ynAfzh/WmBZN3FGswpzjprYMgHg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -62,7 +62,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>uWSaNti1rhEneYuacAjoXY0ogE0=</dsig:DigestValue>
+        <dsig:DigestValue>3XNgnOOfeBvBKNJeH346CjjeewY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -300,13 +300,13 @@
       <dsig:DigestValue>c0O/hxtdo0oWxbaN5ogjwHlJY1w=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="Content\Tiles\mainmenu.png" size="17665">
+  <file name="Content\Tiles\mainmenu.png" size="17901">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>LDBpHKIE4Z6P8R0jF9DfufvhH3U=</dsig:DigestValue>
+      <dsig:DigestValue>GDCmQs5xpiPNaRAg1yLJfoG9rf4=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content\Tiles\nextlevel.png" size="16216">
